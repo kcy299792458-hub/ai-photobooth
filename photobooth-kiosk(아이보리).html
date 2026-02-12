@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 포토부스</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #f7f3ed;
+            --bg-card: #ffffff;
+            --bg-elevated: #eee8df;
+            --accent: #a0785a;
+            --accent-bright: #c49a6c;
+            --accent-glow: rgba(160, 120, 90, 0.18);
+            --accent-secondary: #d4896b;
+            --text-primary: #302820;
+            --text-secondary: #8a7d6e;
+            --text-dim: #b5aa9a;
+            --border: rgba(160, 120, 90, 0.15);
+            --radius: 20px;
+            --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+            cursor: default;
+        }
+
+        /* ========== AMBIENT BACKGROUND ========== */
+        .ambient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .ambient::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            top: -200px; left: -100px;
+            background: radial-gradient(circle, rgba(160,120,90,0.07) 0%, transparent 70%);
+            animation: drift 20s ease-in-out infinite alternate;
+        }
+        .ambient::after {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            bottom: -150px; right: -100px;
+            background: radial-gradient(circle, rgba(212,137,107,0.06) 0%, transparent 70%);
+            animation: drift 25s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(80px, 40px) scale(1.2); }
+        }
+
+        /* ========== NOISE OVERLAY ========== */
+        .noise {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 128px;
+        }
+
+        /* ========== PAGES ========== */
+        .page {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        .page.exit-up {
+            opacity: 0;
+            transform: translateY(-40px);
+        }
+
+        /* ========== PAGE 1 : WELCOME ========== */
+        .welcome-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.2s ease forwards;
+        }
+        .welcome-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(52px, 8vw, 96px);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+            text-align: center;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.4s ease forwards;
+        }
+        .welcome-title .gradient-text {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 50%, #c49a6c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .welcome-sub {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.6s ease forwards;
+        }
+        .start-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: transparent;
+            border: 1.5px solid var(--accent);
+            color: var(--text-primary);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            padding: 20px 52px;
+            border-radius: 60px;
+            cursor: pointer;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.8s ease forwards;
+            transition: var(--transition);
+        }
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 60px;
+        }
+        .start-btn:hover::before { opacity: 1; }
+        .start-btn:hover { border-color: transparent; transform: scale(1.04); }
+        .start-btn:active { transform: scale(0.98); }
+        .start-btn span { position: relative; z-index: 1; }
+        .start-btn .arrow {
+            position: relative; z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        .start-btn:hover .arrow { transform: translateX(4px); }
+
+        .pulse-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border: 1.5px solid var(--accent);
+            border-radius: 60px;
+            animation: pulseRing 2.5s ease-out infinite;
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .welcome-footer {
+            position: absolute;
+            bottom: 40px;
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeUp 0.8s 1s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== PAGE 2 : UPLOAD ========== */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .step-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+        .page-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .upload-area {
+            position: relative;
+            width: min(560px, 90vw);
+            height: 340px;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--bg-elevated);
+        }
+        .upload-area.has-image {
+            border-color: var(--accent);
+            border-style: solid;
+        }
+        .upload-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: rgba(160,120,90,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: var(--transition);
+        }
+        .upload-area:hover .upload-icon {
+            background: rgba(160,120,90,0.12);
+            transform: scale(1.1);
+        }
+        .upload-text { font-size: 17px; font-weight: 500; }
+        .upload-hint { font-size: 13px; color: var(--text-dim); }
+        .upload-preview {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            display: none;
+            padding: 16px;
+        }
+        .upload-area.has-image .upload-icon,
+        .upload-area.has-image .upload-text,
+        .upload-area.has-image .upload-hint { display: none; }
+        .upload-area.has-image .upload-preview { display: block; }
+
+        .upload-tip {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-dim);
+            text-align: center;
+        }
+
+        .nav-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 36px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        .nav-btn.secondary {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+        .nav-btn.secondary:hover {
+            color: var(--text-primary);
+            border-color: var(--accent);
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            color: #fff;
+        }
+        .nav-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+        .nav-btn.primary:active { transform: translateY(0); }
+        .nav-btn:disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* ========== PAGE 3 : STYLE SELECT ========== */
+        .style-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 32px;
+        }
+        .style-tab {
+            padding: 10px 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .style-tab.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .style-tab:not(.active):hover { color: var(--text-primary); }
+
+        .styles-scroll {
+            width: min(1100px, 94vw);
+            max-height: calc(100vh - 340px);
+            overflow-y: auto;
+            padding: 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-elevated) transparent;
+        }
+        .styles-scroll::-webkit-scrollbar { width: 6px; }
+        .styles-scroll::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .style-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-card);
+            border: 2px solid transparent;
+        }
+        .style-item:hover {
+            transform: translateY(-4px);
+            border-color: rgba(160,120,90,0.2);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+        .style-item.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent), 0 12px 40px var(--accent-glow);
+        }
+        .style-item.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 28px; height: 28px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            z-index: 2;
+        }
+        .style-visual {
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+        }
+        .style-visual::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, var(--bg-card));
+        }
+        .style-info {
+            padding: 14px 16px 18px;
+        }
+        .style-name {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .style-desc {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .style-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            z-index: 2;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            color: #a0785a;
+        }
+
+        /* Style gradients */
+        .grad-romance { background: linear-gradient(135deg, #ff6b95 0%, #c74b7a 100%); }
+        .grad-space { background: linear-gradient(135deg, #2d1b69 0%, #11998e 100%); }
+        .grad-fantasy { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
+        .grad-kpop { background: linear-gradient(135deg, #f7797d 0%, #c471ed 50%, #12c2e9 100%); }
+        .grad-vacation { background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%); }
+        .grad-rich { background: linear-gradient(135deg, #c6a052 0%, #8e6d2e 100%); }
+        .grad-demon { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
+        .grad-oshi { background: linear-gradient(135deg, #e44d90 0%, #8b5cf6 100%); }
+        .grad-titan { background: linear-gradient(135deg, #2c3e50 0%, #4a6274 100%); }
+        .grad-chainsaw { background: linear-gradient(135deg, #d32f2f 0%, #ff6659 100%); }
+
+        /* ========== PAGE 4 : PROCESSING ========== */
+        .processing-visual {
+            position: relative;
+            width: 200px; height: 200px;
+            margin-bottom: 40px;
+        }
+        .proc-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid var(--bg-elevated);
+            border-top-color: var(--accent);
+            animation: spin 1.2s linear infinite;
+        }
+        .proc-ring:nth-child(2) {
+            inset: 20px;
+            border-top-color: var(--accent-secondary);
+            animation-duration: 1.8s;
+            animation-direction: reverse;
+        }
+        .proc-ring:nth-child(3) {
+            inset: 40px;
+            border-top-color: #c49a6c;
+            animation-duration: 2.4s;
+        }
+        .proc-icon {
+            position: absolute;
+            inset: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            animation: pulse 2s ease infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .proc-status {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .proc-sub {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        .proc-bar {
+            width: 300px;
+            height: 4px;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .proc-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* ========== PAGE 5 : RESULT ========== */
+        .result-container {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            max-width: 900px;
+        }
+        .result-frame {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--bg-card);
+            flex: 1;
+            min-width: 0;
+        }
+        .result-label {
+            position: absolute;
+            top: 12px; left: 12px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 2;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+        }
+        .result-img {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            display: block;
+            background: var(--bg-elevated);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        .result-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        .result-btn.download {
+            background: var(--accent);
+            color: #fff;
+        }
+        .result-btn.download:hover {
+            background: var(--accent-bright);
+            transform: translateY(-2px);
+        }
+        .result-btn.retry {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+        .result-btn.retry:hover {
+            color: var(--text-primary);
+            border-color: var(--accent);
+        }
+        .result-btn.home {
+            background: transparent;
+            color: var(--text-dim);
+        }
+        .result-btn.home:hover { color: var(--accent); }
+
+        /* ========== PROGRESS DOTS ========== */
+        .progress-dots {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+        .progress-dots .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: var(--transition);
+        }
+        .progress-dots .dot.active {
+            width: 28px;
+            border-radius: 4px;
+            background: var(--accent);
+        }
+        .progress-dots.hide { opacity: 0; pointer-events: none; }
+
+        /* ========== IDLE TIMER ========== */
+        .idle-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(247,243,237,0.94);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .idle-overlay.active { display: flex; }
+        .idle-text { font-size: 24px; font-weight: 700; }
+        .idle-countdown { font-size: 64px; font-weight: 900; color: var(--accent); font-family: 'Outfit', sans-serif; }
+        .idle-sub { color: var(--text-secondary); font-size: 15px; }
+
+        /* ========== TOAST ========== */
+        .toast {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            padding: 14px 28px;
+            background: #c45c3f;
+            color: white;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ========== UTILITY ========== */
+        @media (max-width: 768px) {
+            .page { padding: 24px; }
+            .result-container { flex-direction: column; }
+            .result-actions { flex-wrap: wrap; justify-content: center; }
+            .styles-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .style-visual { height: 100px; font-size: 36px; }
+            .nav-btn { padding: 14px 28px; font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="noise"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Progress Dots -->
+<div class="progress-dots" id="progressDots">
+    <div class="dot active" data-page="0"></div>
+    <div class="dot" data-page="1"></div>
+    <div class="dot" data-page="2"></div>
+    <div class="dot" data-page="3"></div>
+</div>
+
+<!-- Idle Overlay -->
+<div class="idle-overlay" id="idleOverlay">
+    <div class="idle-text">이용하지 않는 중이에요</div>
+    <div class="idle-countdown" id="idleCount">30</div>
+    <div class="idle-sub">화면을 터치하면 계속 이용할 수 있어요</div>
+</div>
+
+<!-- ==================== PAGE 0 : WELCOME ==================== -->
+<div class="page active" id="page-0">
+    <div class="welcome-logo">AI PHOTO BOOTH</div>
+    <div class="welcome-title">
+        <span class="gradient-text">나만의 비주얼</span><br>변신
+    </div>
+    <p class="welcome-sub">AI가 당신을 새로운 세계로 데려갑니다</p>
+    <button class="start-btn" onclick="goTo(1)">
+        <div class="pulse-ring"></div>
+        <span>시작하기</span>
+        <span class="arrow">→</span>
+    </button>
+    <div class="welcome-footer">화면을 터치하여 시작하세요</div>
+</div>
+
+<!-- ==================== PAGE 1 : UPLOAD ==================== -->
+<div class="page" id="page-1">
+    <div class="page-header">
+        <div class="step-indicator"><div class="step-dot"></div> STEP 1 OF 2</div>
+        <div class="page-title">사진을 올려주세요</div>
+    </div>
+
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">터치하여 사진 선택</div>
+        <div class="upload-hint">JPG, PNG · 10MB 이하</div>
+        <img class="upload-preview" id="previewImg" alt="미리보기">
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+    <div class="upload-tip">💡 얼굴이 정면으로 잘 보이는 밝은 사진이 좋아요</div>
+
+    <div class="nav-row">
+        <button class="nav-btn secondary" onclick="goTo(0)">← 처음으로</button>
+        <button class="nav-btn primary" id="uploadNext" onclick="goTo(2)" disabled>다음 단계 →</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 2 : STYLE SELECT ==================== -->
+<div class="page" id="page-2">
+    <div class="page-header">
+        <div class="step-indicator"><div class="step-dot"></div> STEP 2 OF 2</div>
+        <div class="page-title">스타일을 선택하세요</div>
+    </div>
+
+    <div class="style-tabs">
+        <button class="style-tab active" onclick="switchStyleTab('general', this)">일반</button>
+        <button class="style-tab" onclick="switchStyleTab('anime', this)">애니메이션</button>
+    </div>
+
+    <div class="styles-scroll">
+        <!-- General Styles -->
+        <div class="styles-grid" id="grid-general">
+            <div class="style-item" data-style="ideal-date" onclick="selectStyle(this)">
+                <div class="style-badge">🔥 인기</div>
+                <div class="style-visual grad-romance">💕</div>
+                <div class="style-info">
+                    <div class="style-name">이상형과 데이트</div>
+                    <div class="style-desc">완벽한 이상형과 로맨틱 카페 데이트</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="space" onclick="selectStyle(this)">
+                <div class="style-visual grad-space">🌌</div>
+                <div class="style-info">
+                    <div class="style-name">우주 유영</div>
+                    <div class="style-desc">은하수 속 환상적인 우주 비행사</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="fantasy" onclick="selectStyle(this)">
+                <div class="style-visual grad-fantasy">👸</div>
+                <div class="style-info">
+                    <div class="style-name">판타지 주인공</div>
+                    <div class="style-desc">마법 세계의 왕자/공주로 변신</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="kpop" onclick="selectStyle(this)">
+                <div class="style-visual grad-kpop">🎤</div>
+                <div class="style-info">
+                    <div class="style-name">케이팝 아이돌</div>
+                    <div class="style-desc">무대 위 스포트라이트를 받는 스타</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="bali" onclick="selectStyle(this)">
+                <div class="style-visual grad-vacation">🌴</div>
+                <div class="style-info">
+                    <div class="style-name">발리 휴양지</div>
+                    <div class="style-desc">에메랄드빛 바다 위 완벽한 인증샷</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="rich" onclick="selectStyle(this)">
+                <div class="style-visual grad-rich">💎</div>
+                <div class="style-info">
+                    <div class="style-name">재벌 2세</div>
+                    <div class="style-desc">명품 슈트와 럭셔리 라이프</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anime Styles -->
+        <div class="styles-grid" id="grid-anime" style="display:none">
+            <div class="style-item" data-style="demon-slayer" onclick="selectStyle(this)">
+                <div class="style-badge">🔥 인기</div>
+                <div class="style-visual grad-demon">🗡️</div>
+                <div class="style-info">
+                    <div class="style-name">귀멸의 칼날</div>
+                    <div class="style-desc">강렬한 색감의 귀살대원으로 변신</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="oshi-no-ko" onclick="selectStyle(this)">
+                <div class="style-badge">🔥 인기</div>
+                <div class="style-visual grad-oshi">⭐</div>
+                <div class="style-info">
+                    <div class="style-name">최애의 아이</div>
+                    <div class="style-desc">별 모양 눈동자의 화려한 아이돌</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="attack-titan" onclick="selectStyle(this)">
+                <div class="style-visual grad-titan">⚔️</div>
+                <div class="style-info">
+                    <div class="style-name">진격의 거인</div>
+                    <div class="style-desc">조사병단의 용감한 전사로 변신</div>
+                </div>
+            </div>
+            <div class="style-item" data-style="chainsaw-man" onclick="selectStyle(this)">
+                <div class="style-badge">✨ NEW</div>
+                <div class="style-visual grad-chainsaw">⛓️</div>
+                <div class="style-info">
+                    <div class="style-name">체인소맨</div>
+                    <div class="style-desc">다크하고 강렬한 데빌 헌터</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-row">
+        <button class="nav-btn secondary" onclick="goTo(1)">← 이전</button>
+        <button class="nav-btn primary" id="styleNext" onclick="startProcessing()" disabled>변환 시작 →</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 3 : PROCESSING ==================== -->
+<div class="page" id="page-3">
+    <div class="processing-visual">
+        <div class="proc-ring"></div>
+        <div class="proc-ring"></div>
+        <div class="proc-ring"></div>
+        <div class="proc-icon">🎨</div>
+    </div>
+    <div class="proc-status">AI가 변환 중이에요</div>
+    <div class="proc-sub" id="procMsg">스타일을 분석하고 있어요...</div>
+    <div class="proc-bar"><div class="proc-bar-fill" id="procFill"></div></div>
+</div>
+
+<!-- ==================== PAGE 4 : RESULT ==================== -->
+<div class="page" id="page-4">
+    <div class="page-header">
+        <div class="step-indicator"><div class="step-dot"></div> 완료</div>
+        <div class="page-title">변환이 완료되었어요! 🎉</div>
+    </div>
+
+    <div class="result-container">
+        <div class="result-frame">
+            <div class="result-label">원본</div>
+            <img class="result-img" id="resultOriginal" alt="원본">
+        </div>
+        <div class="result-frame">
+            <div class="result-label" style="color: var(--accent);">AI 변환</div>
+            <img class="result-img" id="resultConverted" alt="변환 결과">
+        </div>
+    </div>
+
+    <div class="result-actions">
+        <button class="result-btn download" onclick="downloadResult()">💾 다운로드</button>
+        <button class="result-btn retry" onclick="retryConversion()">🔄 다시 변환</button>
+        <button class="result-btn home" onclick="resetAll()">🏠 처음으로</button>
+    </div>
+</div>
+
+<script>
+    // ===== STATE =====
+    let currentPage = 0;
+    let uploadedImage = null;
+    let selectedStyle = null;
+    const IDLE_TIMEOUT = 120000; // 2 min
+    const IDLE_COUNTDOWN = 30;
+    let idleTimer = null;
+    let countdownTimer = null;
+
+    // ===== NAVIGATION =====
+    function goTo(pageIdx) {
+        const current = document.getElementById(`page-${currentPage}`);
+        const next = document.getElementById(`page-${pageIdx}`);
+
+        current.classList.remove('active');
+        current.classList.add('exit-up');
+        setTimeout(() => current.classList.remove('exit-up'), 600);
+
+        setTimeout(() => {
+            next.classList.add('active');
+        }, 150);
+
+        currentPage = pageIdx;
+        updateDots();
+        resetIdle();
+    }
+
+    function updateDots() {
+        const dots = document.querySelectorAll('.progress-dots .dot');
+        dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
+        // Hide dots on welcome & processing pages
+        const hide = currentPage === 0 || currentPage === 3;
+        document.getElementById('progressDots').classList.toggle('hide', hide);
+    }
+
+    // ===== FILE UPLOAD =====
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.match('image.*')) {
+            showToast('이미지 파일만 업로드 가능합니다');
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            showToast('10MB 이하 파일만 가능합니다');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            uploadedImage = e.target.result;
+            document.getElementById('previewImg').src = uploadedImage;
+            document.getElementById('uploadArea').classList.add('has-image');
+            document.getElementById('uploadNext').disabled = false;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ===== STYLE SELECT =====
+    function switchStyleTab(tab, btn) {
+        document.querySelectorAll('.style-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('grid-general').style.display = tab === 'general' ? 'grid' : 'none';
+        document.getElementById('grid-anime').style.display = tab === 'anime' ? 'grid' : 'none';
+    }
+
+    function selectStyle(el) {
+        document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedStyle = el.getAttribute('data-style');
+        document.getElementById('styleNext').disabled = false;
+    }
+
+    // ===== PROCESSING =====
+    function startProcessing() {
+        if (!uploadedImage) { showToast('사진을 먼저 업로드해주세요'); goTo(1); return; }
+        if (!selectedStyle) { showToast('스타일을 선택해주세요'); return; }
+
+        goTo(3);
+
+        const messages = [
+            '스타일을 분석하고 있어요...',
+            '얼굴 특징을 파악하는 중...',
+            'AI가 열심히 그리고 있어요...',
+            '마무리 작업 중...'
+        ];
+        const fill = document.getElementById('procFill');
+        const msg = document.getElementById('procMsg');
+        let progress = 0;
+
+        const interval = setInterval(() => {
+            progress += 2;
+            fill.style.width = progress + '%';
+            const msgIdx = Math.min(Math.floor(progress / 28), messages.length - 1);
+            msg.textContent = messages[msgIdx];
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(showResult, 400);
+            }
+        }, 80);
+    }
+
+    function showResult() {
+        document.getElementById('resultOriginal').src = uploadedImage;
+        // In production, this would be the AI-converted image
+        document.getElementById('resultConverted').src = uploadedImage;
+        goTo(4);
+    }
+
+    // ===== ACTIONS =====
+    function downloadResult() {
+        const link = document.createElement('a');
+        link.href = document.getElementById('resultConverted').src;
+        link.download = 'ai_photobooth_' + selectedStyle + '.jpg';
+        link.click();
+        showToast('다운로드가 시작됩니다 💾');
+    }
+
+    function retryConversion() {
+        // Keep photo, go back to style select
+        selectedStyle = null;
+        document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
+        document.getElementById('styleNext').disabled = true;
+        document.getElementById('procFill').style.width = '0%';
+        goTo(2);
+    }
+
+    function resetAll() {
+        uploadedImage = null;
+        selectedStyle = null;
+        document.getElementById('uploadArea').classList.remove('has-image');
+        document.getElementById('previewImg').src = '';
+        document.getElementById('uploadNext').disabled = true;
+        document.getElementById('styleNext').disabled = true;
+        document.getElementById('procFill').style.width = '0%';
+        document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
+        document.getElementById('fileInput').value = '';
+        goTo(0);
+    }
+
+    // ===== TOAST =====
+    function showToast(message) {
+        const t = document.getElementById('toast');
+        t.textContent = message;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ===== IDLE DETECTION (Kiosk essential) =====
+    function resetIdle() {
+        clearTimeout(idleTimer);
+        clearInterval(countdownTimer);
+        document.getElementById('idleOverlay').classList.remove('active');
+
+        if (currentPage === 0) return; // Don't idle on welcome
+
+        idleTimer = setTimeout(() => {
+            showIdleWarning();
+        }, IDLE_TIMEOUT);
+    }
+
+    function showIdleWarning() {
+        const overlay = document.getElementById('idleOverlay');
+        const countEl = document.getElementById('idleCount');
+        overlay.classList.add('active');
+        let count = IDLE_COUNTDOWN;
+        countEl.textContent = count;
+
+        countdownTimer = setInterval(() => {
+            count--;
+            countEl.textContent = count;
+            if (count <= 0) {
+                clearInterval(countdownTimer);
+                overlay.classList.remove('active');
+                resetAll();
+            }
+        }, 1000);
+    }
+
+    // Any interaction resets idle
+    ['click', 'touchstart', 'mousemove'].forEach(evt => {
+        document.addEventListener(evt, () => {
+            if (document.getElementById('idleOverlay').classList.contains('active')) {
+                resetIdle();
+            } else {
+                resetIdle();
+            }
+        });
+    });
+
+    // Init
+    updateDots();
+</script>
+
+</body>
+</html>
