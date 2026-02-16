@@ -952,7 +952,7 @@
                 <div class="frame-cell"></div>
             </div>
             <div class="frame-label">1 × 4</div>
-            <div class="frame-sublabel">길옥한 세로형</div>
+            <div class="frame-sublabel">4,000원</div>
         </div>
 
         <div class="frame-option" id="frameOpt-wide" onclick="selectFrame('wide', this)">
@@ -966,7 +966,7 @@
                 <div class="frame-cell"></div>
             </div>
             <div class="frame-label">2 × 3</div>
-            <div class="frame-sublabel">통통한 직사각형</div>
+            <div class="frame-sublabel">5,000원</div>
         </div>
     </div>
 
@@ -1232,7 +1232,7 @@ CRITICAL RULES — never break these:
     async function callGeminiImageGen(base64Image, mimeType, styleKey) {
         const stylePrompt = STYLE_PROMPTS[styleKey] || 'Transform this person into an amazing artistic version.';
         const prompt = `${stylePrompt}\n\nREMEMBER: Do not change the person's face at all. Keep every facial feature exactly the same.`;
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent?key=${geminiApiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiApiKey}`;
 
         // Strip data URL prefix
         const imageData = base64Image.replace(/^data:image\/\w+;base64,/, '');
