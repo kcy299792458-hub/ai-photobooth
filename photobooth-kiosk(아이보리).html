@@ -199,6 +199,56 @@
             animation: fadeUp 0.8s 1s ease forwards;
         }
 
+        /* ========== API KEY INPUT ========== */
+        .api-key-row {
+            position: absolute;
+            top: 32px;
+            right: 36px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeUp 0.8s 1.1s ease forwards;
+        }
+        .api-key-input {
+            width: 260px;
+            padding: 10px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .api-key-input:focus {
+            border-color: var(--accent);
+        }
+        .api-key-input::placeholder {
+            color: var(--text-dim);
+        }
+        .api-key-save {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .api-key-save:hover { background: var(--accent-bright); }
+        .api-key-status {
+            font-size: 12px;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+        .api-key-status.ok { color: #6aaa6a; }
+
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -233,59 +283,113 @@
             letter-spacing: -1px;
         }
 
-        .upload-area {
+        /* ========== MULTI SLOT UPLOAD ========== */
+        .slots-wrapper {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        /* 1x4 slim layout */
+        .slots-wrapper.layout-slim {
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            max-height: calc(100vh - 320px);
+            overflow-y: auto;
+            padding: 4px;
+        }
+        .slots-wrapper.layout-slim .upload-slot {
+            width: 180px;
+            height: 130px;
+        }
+        /* 2x3 wide layout */
+        .slots-wrapper.layout-wide {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .slots-wrapper.layout-wide .upload-slot {
+            width: 160px;
+            height: 130px;
+        }
+
+        .upload-slot {
             position: relative;
-            width: min(560px, 90vw);
-            height: 340px;
             border: 2px dashed var(--border);
-            border-radius: var(--radius);
+            border-radius: 12px;
             background: var(--bg-card);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 16px;
+            gap: 8px;
             cursor: pointer;
             transition: var(--transition);
             overflow: hidden;
+            flex-shrink: 0;
         }
-        .upload-area:hover {
+        .upload-slot:hover {
             border-color: var(--accent);
             background: var(--bg-elevated);
         }
-        .upload-area.has-image {
+        .upload-slot.has-image {
             border-color: var(--accent);
             border-style: solid;
         }
-        .upload-icon {
-            width: 64px; height: 64px;
+        .slot-number {
+            position: absolute;
+            top: 6px; left: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dim);
+            font-family: 'Outfit', sans-serif;
+        }
+        .upload-slot.has-image .slot-number { color: var(--accent); }
+        .slot-icon { font-size: 22px; transition: var(--transition); }
+        .upload-slot:hover .slot-icon { transform: scale(1.15); }
+        .slot-text { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+        .slot-preview {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: none;
+            border-radius: 10px;
+        }
+        .upload-slot.has-image .slot-icon,
+        .upload-slot.has-image .slot-text { display: none; }
+        .upload-slot.has-image .slot-preview { display: block; }
+        .slot-remove {
+            position: absolute;
+            top: 4px; right: 4px;
+            width: 22px; height: 22px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            border: none;
             border-radius: 50%;
-            background: rgba(160,120,90,0.06);
-            display: flex;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            transition: var(--transition);
+            z-index: 3;
+            line-height: 1;
         }
-        .upload-area:hover .upload-icon {
-            background: rgba(160,120,90,0.12);
-            transform: scale(1.1);
+        .upload-slot.has-image .slot-remove { display: flex; }
+
+        .upload-counter {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 4px;
         }
-        .upload-text { font-size: 17px; font-weight: 500; }
-        .upload-hint { font-size: 13px; color: var(--text-dim); }
-        .upload-preview {
-            width: 100%; height: 100%;
-            object-fit: contain;
-            display: none;
-            padding: 16px;
-        }
-        .upload-area.has-image .upload-icon,
-        .upload-area.has-image .upload-text,
-        .upload-area.has-image .upload-hint { display: none; }
-        .upload-area.has-image .upload-preview { display: block; }
+        .upload-counter span { color: var(--accent); font-weight: 700; }
 
         .upload-tip {
-            margin-top: 16px;
+            margin-top: 8px;
             font-size: 13px;
             color: var(--text-dim);
             text-align: center;
@@ -527,31 +631,34 @@
             transition: width 0.3s ease;
         }
 
-        /* ========== PAGE 5 : RESULT ========== */
+        /* ========== PAGE 6 : RESULT ========== */
         .result-container {
             display: flex;
-            gap: 32px;
+            gap: 40px;
             align-items: flex-start;
-            max-width: 900px;
+            justify-content: center;
         }
-        .result-frame {
-            position: relative;
-            border-radius: var(--radius);
-            overflow: hidden;
-            background: var(--bg-card);
-            flex: 1;
-            min-width: 0;
+        .result-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
-        .result-label {
-            position: absolute;
-            top: 12px; left: 12px;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 12px;
+        .result-section-label {
+            font-size: 13px;
             font-weight: 700;
-            z-index: 2;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        /* 최종 합성 프레임 캔버스 */
+        .result-canvas-wrap {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+        #resultCanvas {
+            display: block;
         }
         .result-img {
             width: 100%;
@@ -670,6 +777,237 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ========== PAGE 3 : MODE SELECT ========== */
+        .mode-options {
+            display: flex;
+            gap: 28px;
+            align-items: stretch;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .mode-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 32px 28px 28px;
+            width: 260px;
+            position: relative;
+            text-align: center;
+        }
+        .mode-option:hover {
+            border-color: rgba(160,120,90,0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.07);
+        }
+        .mode-option.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent), 0 16px 48px var(--accent-glow);
+        }
+        .mode-option.selected .mode-check { display: flex; }
+        .mode-check {
+            position: absolute;
+            top: 14px; right: 14px;
+            width: 26px; height: 26px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .mode-icon {
+            font-size: 44px;
+            line-height: 1;
+        }
+        .mode-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .mode-option.selected .mode-title { color: var(--accent); }
+        .mode-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .mode-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(160,120,90,0.1);
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        /* ========== PAGE 1 : FRAME SHAPE ========== */
+        .frame-options {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .frame-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .frame-option:hover .frame-preview { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+        .frame-option.selected .frame-preview {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent), 0 20px 60px var(--accent-glow);
+        }
+        .frame-option.selected .frame-label { color: var(--accent); font-weight: 700; }
+        .frame-preview {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        /* 1x4 slim: 160x400 */
+        .frame-preview.slim {
+            width: 130px;
+            height: 360px;
+        }
+        /* 2x3 wide: 260x300 */
+        .frame-preview.wide {
+            width: 280px;
+            height: 320px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+        }
+        .frame-cell {
+            background: var(--bg-elevated);
+            margin: 6px;
+            border-radius: 4px;
+        }
+        .frame-preview.slim .frame-cell {
+            margin: 5px 8px;
+            flex: 1;
+        }
+        .frame-preview.slim {
+            flex-direction: column;
+        }
+        .frame-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        .frame-sublabel {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-top: -14px;
+        }
+        .frame-check {
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 28px; height: 28px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            z-index: 2;
+        }
+        .frame-option.selected .frame-check { display: flex; }
+
+        /* ========== PAGE 2 : FRAME DESIGN ========== */
+        .design-options {
+            display: flex;
+            gap: 48px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .design-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .design-option:hover .design-preview { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .design-option.selected .design-preview {
+            box-shadow: 0 0 0 3px var(--accent), 0 20px 60px var(--accent-glow);
+        }
+        .design-option.selected .design-label { color: var(--accent); font-weight: 700; }
+        .design-preview {
+            width: 140px;
+            height: 200px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+        .design-preview.white-frame {
+            background: #ffffff;
+            border-color: #ddd;
+        }
+        .design-preview.black-frame {
+            background: #1a1a1a;
+            border-color: #444;
+        }
+        .design-cell-row {
+            display: flex;
+            flex: 1;
+            gap: 6px;
+            padding: 6px;
+        }
+        .design-cell {
+            flex: 1;
+            border-radius: 4px;
+            background: var(--bg-elevated);
+        }
+        .design-preview.black-frame .design-cell {
+            background: #3a3a3a;
+        }
+        .design-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        .design-check {
+            position: absolute;
+            top: 8px; right: 8px;
+            width: 26px; height: 26px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .design-option.selected .design-check { display: flex; }
+
         /* ========== UTILITY ========== */
         @media (max-width: 768px) {
             .page { padding: 24px; }
@@ -695,6 +1033,9 @@
     <div class="dot" data-page="1"></div>
     <div class="dot" data-page="2"></div>
     <div class="dot" data-page="3"></div>
+    <div class="dot" data-page="4"></div>
+    <div class="dot" data-page="5"></div>
+    <div class="dot" data-page="6"></div>
 </div>
 
 <!-- Idle Overlay -->
@@ -706,6 +1047,11 @@
 
 <!-- ==================== PAGE 0 : WELCOME ==================== -->
 <div class="page active" id="page-0">
+    <div class="api-key-row">
+        <input class="api-key-input" type="password" id="apiKeyInput" placeholder="Gemini API Key 입력" autocomplete="off">
+        <button class="api-key-save" onclick="saveApiKey()">저장</button>
+        <span class="api-key-status" id="apiKeyStatus"></span>
+    </div>
     <div class="welcome-logo">AI PHOTO BOOTH</div>
     <div class="welcome-title">
         <span class="gradient-text">나만의 비주얼</span><br>변신
@@ -719,32 +1065,134 @@
     <div class="welcome-footer">화면을 터치하여 시작하세요</div>
 </div>
 
-<!-- ==================== PAGE 1 : UPLOAD ==================== -->
+<!-- ==================== PAGE 1 : FRAME SHAPE ==================== -->
 <div class="page" id="page-1">
     <div class="page-header">
-        <div class="step-indicator"><div class="step-dot"></div> STEP 1 OF 2</div>
-        <div class="page-title">사진을 올려주세요</div>
+        <div class="step-indicator"><div class="step-dot"></div> STEP 1 OF 4</div>
+        <div class="page-title">프레임 모양을 선택하세요</div>
     </div>
 
-    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-        <div class="upload-icon">📷</div>
-        <div class="upload-text">터치하여 사진 선택</div>
-        <div class="upload-hint">JPG, PNG · 10MB 이하</div>
-        <img class="upload-preview" id="previewImg" alt="미리보기">
-        <input type="file" id="fileInput" accept="image/*" style="display:none">
+    <div class="frame-options">
+        <div class="frame-option" id="frameOpt-slim" onclick="selectFrame('slim', this)">
+            <div class="frame-preview slim" id="framePreview-slim">
+                <div class="frame-check">✓</div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+            </div>
+            <div class="frame-label">1 × 4</div>
+            <div class="frame-sublabel">4,000원</div>
+        </div>
+
+        <div class="frame-option" id="frameOpt-wide" onclick="selectFrame('wide', this)">
+            <div class="frame-preview wide" id="framePreview-wide">
+                <div class="frame-check">✓</div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+            </div>
+            <div class="frame-label">2 × 3</div>
+            <div class="frame-sublabel">5,000원</div>
+        </div>
     </div>
-    <div class="upload-tip">💡 얼굴이 정면으로 잘 보이는 밝은 사진이 좋아요</div>
 
     <div class="nav-row">
         <button class="nav-btn secondary" onclick="goTo(0)">← 처음으로</button>
-        <button class="nav-btn primary" id="uploadNext" onclick="goTo(2)" disabled>다음 단계 →</button>
+        <button class="nav-btn primary" id="frameNext" onclick="goTo(2)" disabled>다음 단계 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 2 : STYLE SELECT ==================== -->
+<!-- ==================== PAGE 2 : FRAME DESIGN ==================== -->
 <div class="page" id="page-2">
     <div class="page-header">
-        <div class="step-indicator"><div class="step-dot"></div> STEP 2 OF 2</div>
+        <div class="step-indicator"><div class="step-dot"></div> STEP 2 OF 4</div>
+        <div class="page-title">프레임 디자인을 선택하세요</div>
+    </div>
+
+    <div class="design-options">
+        <div class="design-option" id="designOpt-white" onclick="selectDesign('white', this)">
+            <div class="design-preview white-frame">
+                <div class="design-check">✓</div>
+                <div class="design-cell-row"><div class="design-cell"></div><div class="design-cell"></div></div>
+                <div class="design-cell-row"><div class="design-cell"></div><div class="design-cell"></div></div>
+                <div class="design-cell-row"><div class="design-cell"></div><div class="design-cell"></div></div>
+            </div>
+            <div class="design-label">화이트</div>
+        </div>
+
+        <div class="design-option" id="designOpt-black" onclick="selectDesign('black', this)">
+            <div class="design-preview black-frame">
+                <div class="design-check">✓</div>
+                <div class="design-cell-row"><div class="design-cell"></div><div class="design-cell"></div></div>
+                <div class="design-cell-row"><div class="design-cell"></div><div class="design-cell"></div></div>
+                <div class="design-cell-row"><div class="design-cell"></div><div class="design-cell"></div></div>
+            </div>
+            <div class="design-label">블랙</div>
+        </div>
+    </div>
+
+    <div class="nav-row">
+        <button class="nav-btn secondary" onclick="goTo(1)">← 이전</button>
+        <button class="nav-btn primary" id="designNext" onclick="goTo(3)" disabled>다음 단계 →</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 3 : MODE SELECT ==================== -->
+<div class="page" id="page-3">
+    <div class="page-header">
+        <div class="step-indicator"><div class="step-dot"></div> STEP 3 OF 5</div>
+        <div class="page-title">촬영 방식을 선택하세요</div>
+    </div>
+
+    <div class="mode-options">
+        <div class="mode-option" id="modeOpt-auto" onclick="selectMode('auto', this)">
+            <div class="mode-check">✓</div>
+            <div class="mode-icon">✨</div>
+            <div class="mode-title">AI 자동 생성</div>
+            <div class="mode-desc">사진 1장만 올리면<br>AI가 스토리 있는<br>전체 칸을 만들어줘요</div>
+            <span class="mode-badge">사진 1장만 필요</span>
+        </div>
+
+        <div class="mode-option" id="modeOpt-manual" onclick="selectMode('manual', this)">
+            <div class="mode-check">✓</div>
+            <div class="mode-icon">📷</div>
+            <div class="mode-title">직접 선택</div>
+            <div class="mode-desc">각 칸에 들어갈 사진을<br>직접 한 장씩<br>선택할 수 있어요</div>
+            <span class="mode-badge">칸마다 사진 선택</span>
+        </div>
+    </div>
+
+    <div class="nav-row">
+        <button class="nav-btn secondary" onclick="goTo(2)">← 이전</button>
+        <button class="nav-btn primary" id="modeNext" onclick="goTo(4)" disabled>다음 단계 →</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 4 : UPLOAD ==================== -->
+<div class="page" id="page-4">
+    <div class="page-header">
+        <div class="step-indicator"><div class="step-dot"></div> STEP 4 OF 5</div>
+        <div class="page-title">사진을 올려주세요</div>
+    </div>
+
+    <div class="slots-wrapper" id="slotsWrapper"></div>
+    <div class="upload-counter" id="uploadCounter">0 / 0 장 업로드됨</div>
+    <div class="upload-tip">💡 얼굴이 정면으로 잘 보이는 밝은 사진이 좋아요</div>
+
+    <div class="nav-row">
+        <button class="nav-btn secondary" onclick="goTo(3)">← 이전</button>
+        <button class="nav-btn primary" id="uploadNext" onclick="goTo(5)" disabled>다음 단계 →</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 5 : STYLE SELECT ==================== -->
+<div class="page" id="page-5">
+    <div class="page-header">
+        <div class="step-indicator"><div class="step-dot"></div> STEP 5 OF 5</div>
         <div class="page-title">스타일을 선택하세요</div>
     </div>
 
@@ -838,13 +1286,13 @@
     </div>
 
     <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(1)">← 이전</button>
+        <button class="nav-btn secondary" onclick="goTo(4)">← 이전</button>
         <button class="nav-btn primary" id="styleNext" onclick="startProcessing()" disabled>변환 시작 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 3 : PROCESSING ==================== -->
-<div class="page" id="page-3">
+<!-- ==================== PAGE 6 : PROCESSING ==================== -->
+<div class="page" id="page-6">
     <div class="processing-visual">
         <div class="proc-ring"></div>
         <div class="proc-ring"></div>
@@ -856,21 +1304,19 @@
     <div class="proc-bar"><div class="proc-bar-fill" id="procFill"></div></div>
 </div>
 
-<!-- ==================== PAGE 4 : RESULT ==================== -->
-<div class="page" id="page-4">
+<!-- ==================== PAGE 7 : RESULT ==================== -->
+<div class="page" id="page-7">
     <div class="page-header">
         <div class="step-indicator"><div class="step-dot"></div> 완료</div>
         <div class="page-title">변환이 완료되었어요! 🎉</div>
     </div>
 
     <div class="result-container">
-        <div class="result-frame">
-            <div class="result-label">원본</div>
-            <img class="result-img" id="resultOriginal" alt="원본">
-        </div>
-        <div class="result-frame">
-            <div class="result-label" style="color: var(--accent);">AI 변환</div>
-            <img class="result-img" id="resultConverted" alt="변환 결과">
+        <div class="result-section">
+            <div class="result-section-label">완성 프레임</div>
+            <div class="result-canvas-wrap">
+                <canvas id="resultCanvas"></canvas>
+            </div>
         </div>
     </div>
 
@@ -884,12 +1330,111 @@
 <script>
     // ===== STATE =====
     let currentPage = 0;
-    let uploadedImage = null;
+    let uploadedImages = [];    // array of base64 strings per slot
     let selectedStyle = null;
-    const IDLE_TIMEOUT = 120000; // 2 min
+    let selectedFrame = null;   // 'slim' | 'wide'
+    let selectedDesign = null;  // 'white' | 'black'
+    let selectedMode = null;    // 'auto' | 'manual'
+    let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
+    let convertedImages = [];   // array of converted base64 strings
+    const IDLE_TIMEOUT = 120000;
     const IDLE_COUNTDOWN = 30;
     let idleTimer = null;
     let countdownTimer = null;
+
+    // frame config
+    const FRAME_CONFIG = {
+        slim: { cols: 1, rows: 4, total: 4 },
+        wide: { cols: 2, rows: 3, total: 6 }
+    };
+
+    // ===== API KEY =====
+    function saveApiKey() {
+        const val = document.getElementById('apiKeyInput').value.trim();
+        if (!val) { showToast('API 키를 입력해주세요'); return; }
+        geminiApiKey = val;
+        localStorage.setItem('gemini_api_key', val);
+        document.getElementById('apiKeyStatus').textContent = '✓ 저장됨';
+        document.getElementById('apiKeyStatus').className = 'api-key-status ok';
+        document.getElementById('apiKeyInput').value = '';
+        showToast('API 키가 저장되었습니다 ✓');
+    }
+
+    // Init API key UI
+    if (geminiApiKey) {
+        document.getElementById('apiKeyStatus').textContent = '✓ 저장됨';
+        document.getElementById('apiKeyStatus').className = 'api-key-status ok';
+    }
+
+    // ===== STYLE PROMPTS =====
+    const STYLE_PROMPTS = {
+        'ideal-date': 'Transform this person into a romantic date scene at a beautiful cafe. Keep the person\'s facial features, but style them elegantly. Add romantic lighting, rose petals, soft bokeh background with a cozy cafe interior. Photorealistic, high quality.',
+        'space': 'Transform this person into an astronaut floating in space surrounded by a stunning galaxy, nebulas, and stars. Keep their facial features. Wearing a sleek futuristic space suit. Cinematic, photorealistic.',
+        'fantasy': 'Transform this person into a fantasy prince or princess in a magical kingdom. Keep their facial features. Add an elegant royal outfit, magical glowing effects, fantasy castle background. Highly detailed, cinematic.',
+        'kpop': 'Transform this person into a K-pop idol on a concert stage. Keep their facial features. Add stylish modern outfit, dramatic stage lighting with colorful spotlights, crowd in background. High quality, photorealistic.',
+        'bali': 'Transform this person into a vacation photo at a luxury Bali resort. Keep their facial features. Add stylish summer outfit, turquoise ocean, tropical palm trees, golden hour lighting. Travel photography style.',
+        'rich': 'Transform this person into a wealthy heir or heiress. Keep their facial features. Add a luxury tailored suit or elegant dress, premium watch or jewelry, blurred luxury car or penthouse background. Sophisticated, photorealistic.',
+        'demon-slayer': 'Transform this person into an anime character in the style of Demon Slayer (Kimetsu no Yaiba). Keep their facial proportions. Add a demon slayer corps uniform (haori), intense anime art style with vibrant colors, dynamic background.',
+        'oshi-no-ko': 'Transform this person into an anime idol character in the style of Oshi no Ko. Keep their facial proportions. Add star-shaped pupils, idol outfit, sparkly stage background, cute anime art style.',
+        'attack-titan': 'Transform this person into a Survey Corps soldier from Attack on Titan anime. Keep their facial proportions. Add the Survey Corps uniform with ODM gear, dramatic sky and wall background, anime art style.',
+        'chainsaw-man': 'Transform this person into a character in the style of Chainsaw Man anime. Keep their facial proportions. Dark and gritty anime art style, devil hunter outfit, dramatic moody background with chains.'
+    };
+
+    // ===== GEMINI API CALL =====
+    const SYSTEM_PROMPT = `You are an AI photo transformation assistant. Your absolute top priority is facial identity preservation.
+
+CRITICAL RULES — never break these:
+1. The subject's face must remain IDENTICAL: same eye shape, nose shape, lip shape, jaw line, face structure, skin tone, and all unique facial features.
+2. Do NOT alter, stylize, smooth, reshape, or idealize the face in any way. The face must look like the exact same person.
+3. Only change: clothing, hairstyle, background, lighting, color grading, and overall scene atmosphere.
+4. If the style is anime or illustrated, maintain the facial likeness as closely as possible while applying the art style only to non-face elements.
+5. The output must clearly be recognizable as the same person from the input photo.`;
+
+    async function callGeminiImageGen(base64Image, mimeType, styleKey) {
+        const stylePrompt = STYLE_PROMPTS[styleKey] || 'Transform this person into an amazing artistic version.';
+        const prompt = `${stylePrompt}\n\nREMEMBER: Do not change the person's face at all. Keep every facial feature exactly the same.`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiApiKey}`;
+
+        // Strip data URL prefix
+        const imageData = base64Image.replace(/^data:image\/\w+;base64,/, '');
+        const imgMime = mimeType || 'image/jpeg';
+
+        const body = {
+            system_instruction: {
+                parts: [{ text: SYSTEM_PROMPT }]
+            },
+            contents: [{
+                parts: [
+                    { text: prompt },
+                    { inline_data: { mime_type: imgMime, data: imageData } }
+                ]
+            }],
+            generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
+        };
+
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error?.message || `API 오류 (${res.status})`);
+        }
+
+        const data = await res.json();
+        const parts = data.candidates?.[0]?.content?.parts || [];
+        for (const part of parts) {
+            // API returns camelCase: inlineData (not inline_data)
+            const img = part.inlineData || part.inline_data;
+            if (img?.mimeType?.startsWith('image/') || img?.mime_type?.startsWith('image/')) {
+                const mime = img.mimeType || img.mime_type;
+                return `data:${mime};base64,${img.data}`;
+            }
+        }
+        throw new Error('이미지 응답을 찾을 수 없습니다');
+    }
 
     // ===== NAVIGATION =====
     function goTo(pageIdx) {
@@ -902,6 +1447,10 @@
 
         setTimeout(() => {
             next.classList.add('active');
+            // 업로드 페이지 진입 시 슬롯 빌드
+            if (pageIdx === 4 && selectedFrame && selectedMode) {
+                buildSlots();
+            }
         }, 150);
 
         currentPage = pageIdx;
@@ -913,33 +1462,150 @@
         const dots = document.querySelectorAll('.progress-dots .dot');
         dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
         // Hide dots on welcome & processing pages
-        const hide = currentPage === 0 || currentPage === 3;
+        const hide = currentPage === 0 || currentPage === 6;
         document.getElementById('progressDots').classList.toggle('hide', hide);
     }
 
-    // ===== FILE UPLOAD =====
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+    // ===== MODE SELECT =====
+    function selectMode(type, el) {
+        document.querySelectorAll('.mode-option').forEach(m => m.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedMode = type;
+        document.getElementById('modeNext').disabled = false;
+        // 모드 바꾸면 업로드 슬롯 초기화
+        uploadedImages = [];
+        document.getElementById('slotsWrapper').innerHTML = '';
+        document.getElementById('uploadNext').disabled = true;
+    }
 
-        if (!file.type.match('image.*')) {
-            showToast('이미지 파일만 업로드 가능합니다');
+    // ===== UPLOAD SLOTS =====
+    function buildSlots() {
+        const cfg = FRAME_CONFIG[selectedFrame];
+        const wrapper = document.getElementById('slotsWrapper');
+        wrapper.innerHTML = '';
+
+        if (selectedMode === 'auto') {
+            // AI 자동: 슬롯 1개만
+            uploadedImages = [null];
+            wrapper.className = 'slots-wrapper layout-auto';
+            wrapper.style.cssText = 'display:flex;justify-content:center;margin-bottom:8px;';
+
+            const slot = document.createElement('div');
+            slot.className = 'upload-slot';
+            slot.id = 'slot-0';
+            slot.style.cssText = 'width:200px;height:240px;';
+            slot.innerHTML = `
+                <span class="slot-number">대표 사진</span>
+                <div class="slot-icon">✨</div>
+                <div class="slot-text">사진 1장 선택</div>
+                <img class="slot-preview" id="slotPreview-0" alt="">
+                <button class="slot-remove" onclick="removeSlot(event, 0)">✕</button>
+                <input type="file" id="slotFile-0" accept="image/*" style="display:none">
+            `;
+            slot.addEventListener('click', () => document.getElementById('slotFile-0').click());
+            wrapper.appendChild(slot);
+
+            document.getElementById('slotFile-0').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (!file.type.match('image.*')) { showToast('이미지 파일만 가능합니다'); return; }
+                if (file.size > 10 * 1024 * 1024) { showToast('10MB 이하 파일만 가능합니다'); return; }
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    uploadedImages[0] = ev.target.result;
+                    document.getElementById('slotPreview-0').src = ev.target.result;
+                    document.getElementById('slot-0').classList.add('has-image');
+                    updateUploadCounter();
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document.getElementById('uploadCounter').innerHTML =
+                `AI가 <span>${cfg.total}장</span>을 자동으로 만들어드려요`;
+            document.getElementById('uploadNext').disabled = true;
+            updateUploadCounter();
             return;
         }
-        if (file.size > 10 * 1024 * 1024) {
-            showToast('10MB 이하 파일만 가능합니다');
-            return;
-        }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            uploadedImage = e.target.result;
-            document.getElementById('previewImg').src = uploadedImage;
-            document.getElementById('uploadArea').classList.add('has-image');
-            document.getElementById('uploadNext').disabled = false;
-        };
-        reader.readAsDataURL(file);
-    });
+        // manual 모드: 기존 다중 슬롯
+        uploadedImages = new Array(cfg.total).fill(null);
+        wrapper.className = `slots-wrapper layout-${selectedFrame}`;
+        wrapper.style.cssText = '';
+
+        for (let i = 0; i < cfg.total; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'upload-slot';
+            slot.id = `slot-${i}`;
+            slot.innerHTML = `
+                <span class="slot-number">${i + 1}</span>
+                <div class="slot-icon">📷</div>
+                <div class="slot-text">터치하여 선택</div>
+                <img class="slot-preview" id="slotPreview-${i}" alt="">
+                <button class="slot-remove" onclick="removeSlot(event, ${i})">✕</button>
+                <input type="file" id="slotFile-${i}" accept="image/*" style="display:none">
+            `;
+            slot.addEventListener('click', () => document.getElementById(`slotFile-${i}`).click());
+            wrapper.appendChild(slot);
+
+            document.getElementById(`slotFile-${i}`).addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (!file.type.match('image.*')) { showToast('이미지 파일만 가능합니다'); return; }
+                if (file.size > 10 * 1024 * 1024) { showToast('10MB 이하 파일만 가능합니다'); return; }
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    uploadedImages[i] = ev.target.result;
+                    const slotEl = document.getElementById(`slot-${i}`);
+                    document.getElementById(`slotPreview-${i}`).src = ev.target.result;
+                    slotEl.classList.add('has-image');
+                    updateUploadCounter();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        updateUploadCounter();
+    }
+
+    function removeSlot(e, idx) {
+        e.stopPropagation();
+        uploadedImages[idx] = null;
+        const slotEl = document.getElementById(`slot-${idx}`);
+        slotEl.classList.remove('has-image');
+        document.getElementById(`slotPreview-${idx}`).src = '';
+        document.getElementById(`slotFile-${idx}`).value = '';
+        updateUploadCounter();
+    }
+
+    function updateUploadCounter() {
+        const cfg = FRAME_CONFIG[selectedFrame];
+        const filled = uploadedImages.filter(Boolean).length;
+        if (selectedMode === 'auto') {
+            document.getElementById('uploadCounter').innerHTML = filled
+                ? `선택 완료! AI가 <span>${cfg.total}장</span>을 자동으로 만들어드려요`
+                : `AI가 <span>${cfg.total}장</span>을 자동으로 만들어드려요`;
+            document.getElementById('uploadNext').disabled = filled < 1;
+        } else {
+            document.getElementById('uploadCounter').innerHTML =
+                `<span>${filled}</span> / ${cfg.total} 장 업로드됨`;
+            document.getElementById('uploadNext').disabled = filled < cfg.total;
+        }
+    }
+
+    // ===== FRAME SELECT =====
+    function selectFrame(type, el) {
+        document.querySelectorAll('.frame-option').forEach(f => f.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedFrame = type;
+        document.getElementById('frameNext').disabled = false;
+    }
+
+    // ===== DESIGN SELECT =====
+    function selectDesign(type, el) {
+        document.querySelectorAll('.design-option').forEach(d => d.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedDesign = type;
+        document.getElementById('designNext').disabled = false;
+    }
 
     // ===== STYLE SELECT =====
     function switchStyleTab(tab, btn) {
@@ -957,70 +1623,235 @@
     }
 
     // ===== PROCESSING =====
-    function startProcessing() {
-        if (!uploadedImage) { showToast('사진을 먼저 업로드해주세요'); goTo(1); return; }
+    async function startProcessing() {
+        const cfg = FRAME_CONFIG[selectedFrame];
+        const minRequired = selectedMode === 'auto' ? 1 : cfg.total;
+        if (uploadedImages.filter(Boolean).length < minRequired) { showToast('사진을 업로드해주세요'); goTo(4); return; }
         if (!selectedStyle) { showToast('스타일을 선택해주세요'); return; }
+        if (!geminiApiKey) { showToast('API 키를 먼저 입력해주세요'); goTo(0); return; }
 
-        goTo(3);
+        goTo(6);
 
-        const messages = [
+        const isAuto = selectedMode === 'auto';
+        const messages = isAuto ? [
+            '사진을 분석하고 있어요...',
+            `${cfg.total}컷 스토리를 구성하는 중...`,
+            'AI가 인생네컷을 만들고 있어요...',
+            '마무리 작업 중...'
+        ] : [
             '스타일을 분석하고 있어요...',
             '얼굴 특징을 파악하는 중...',
-            'AI가 열심히 그리고 있어요...',
+            `AI가 ${cfg.total}장을 변환하고 있어요...`,
             '마무리 작업 중...'
         ];
+
         const fill = document.getElementById('procFill');
         const msg = document.getElementById('procMsg');
+
         let progress = 0;
+        let apiDone = false;
+        let apiError = null;
 
         const interval = setInterval(() => {
-            progress += 2;
-            fill.style.width = progress + '%';
-            const msgIdx = Math.min(Math.floor(progress / 28), messages.length - 1);
-            msg.textContent = messages[msgIdx];
-
-            if (progress >= 100) {
-                clearInterval(interval);
-                setTimeout(showResult, 400);
+            const limit = apiDone ? 100 : 88;
+            if (progress < limit) {
+                progress += apiDone ? 4 : 0.8;
+                fill.style.width = Math.min(progress, 100) + '%';
+                const msgIdx = Math.min(Math.floor(progress / 25), messages.length - 1);
+                msg.textContent = messages[msgIdx];
             }
-        }, 80);
+            if (apiDone && progress >= 100) {
+                clearInterval(interval);
+                if (apiError) {
+                    showToast('오류: ' + apiError);
+                    goTo(5);
+                } else {
+                    renderResult();
+                    goTo(7);
+                }
+            }
+        }, 60);
+
+        try {
+            if (isAuto) {
+                // AI 자동: 사진 1장으로 N컷 스토리 생성 (병렬)
+                const srcImg = uploadedImages[0];
+                const mimeMatch = srcImg.match(/^data:(image\/\w+);base64,/);
+                const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+                const autoPromises = Array.from({ length: cfg.total }, (_, i) =>
+                    callGeminiImageGenAuto(srcImg, mime, selectedStyle, i, cfg.total)
+                );
+                convertedImages = await Promise.all(autoPromises);
+            } else {
+                // manual: 각 슬롯 병렬 변환
+                const promises = uploadedImages.map(img => {
+                    const mimeMatch = img.match(/^data:(image\/\w+);base64,/);
+                    const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+                    return callGeminiImageGen(img, mime, selectedStyle);
+                });
+                convertedImages = await Promise.all(promises);
+            }
+        } catch (e) {
+            apiError = e.message;
+        }
+        apiDone = true;
     }
 
-    function showResult() {
-        document.getElementById('resultOriginal').src = uploadedImage;
-        // In production, this would be the AI-converted image
-        document.getElementById('resultConverted').src = uploadedImage;
-        goTo(4);
+    // AI 자동 모드 전용 API 호출 — 같은 인물, 서로 다른 장면/순간 생성
+    async function callGeminiImageGenAuto(base64Image, mimeType, styleKey, slotIndex, totalSlots) {
+        const stylePrompt = STYLE_PROMPTS[styleKey] || 'Transform this person into an amazing artistic version.';
+        const sceneDescriptions = [
+            `Scene ${slotIndex + 1} of ${totalSlots}: Beginning / introduction scene. The person is arriving or preparing.`,
+            `Scene ${slotIndex + 1} of ${totalSlots}: Rising action scene. The person is actively engaged, excited, in motion.`,
+            `Scene ${slotIndex + 1} of ${totalSlots}: Climax / highlight scene. The most dramatic, emotional, or peak moment.`,
+            `Scene ${slotIndex + 1} of ${totalSlots}: Ending / resolution scene. A calm, reflective, or happy conclusion.`,
+            `Scene ${slotIndex + 1} of ${totalSlots}: A unique memorable moment that fits the overall story.`,
+            `Scene ${slotIndex + 1} of ${totalSlots}: Final scene. A closing moment that wraps up the story beautifully.`
+        ];
+        const sceneHint = sceneDescriptions[slotIndex] || `Scene ${slotIndex + 1} of ${totalSlots}.`;
+
+        const prompt = `${stylePrompt}
+
+This is part of a ${totalSlots}-panel photo story (like a photo booth strip).
+${sceneHint}
+Make this scene visually distinct from other panels — different pose, expression, camera angle, or moment — but keep it part of the same continuous story.
+REMEMBER: Keep the person's facial features exactly the same. Do not change the face at all.`;
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiApiKey}`;
+        const imageData = base64Image.replace(/^data:image\/\w+;base64,/, '');
+
+        const body = {
+            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            contents: [{ parts: [
+                { text: prompt },
+                { inline_data: { mime_type: mimeType, data: imageData } }
+            ]}],
+            generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
+        };
+
+        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.error?.message || `API 오류 (${res.status})`); }
+        const data = await res.json();
+        const parts = data.candidates?.[0]?.content?.parts || [];
+        for (const part of parts) {
+            const img = part.inlineData || part.inline_data;
+            if (img?.mimeType?.startsWith('image/') || img?.mime_type?.startsWith('image/')) {
+                return `data:${img.mimeType || img.mime_type};base64,${img.data}`;
+            }
+        }
+        throw new Error('이미지 응답을 찾을 수 없습니다');
+    }
+
+    // ===== CANVAS RENDER =====
+    function renderResult() {
+        const cfg = FRAME_CONFIG[selectedFrame];
+        const bgColor = selectedDesign === 'black' ? '#1a1a1a' : '#ffffff';
+        const pad = 14;        // outer padding
+        const gap = 8;         // gap between cells
+        const cellW = 200;     // each cell width
+        const cellH = 260;     // each cell height
+
+        const canvasW = pad * 2 + cfg.cols * cellW + (cfg.cols - 1) * gap;
+        const canvasH = pad * 2 + cfg.rows * cellH + (cfg.rows - 1) * gap;
+
+        const canvas = document.getElementById('resultCanvas');
+        canvas.width = canvasW;
+        canvas.height = canvasH;
+
+        // Scale down for display (max height ~420px)
+        const displayScale = Math.min(1, 420 / canvasH);
+        canvas.style.width = (canvasW * displayScale) + 'px';
+        canvas.style.height = (canvasH * displayScale) + 'px';
+
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvasW, canvasH);
+
+        let loaded = 0;
+        convertedImages.forEach((src, i) => {
+            const col = i % cfg.cols;
+            const row = Math.floor(i / cfg.cols);
+            const x = pad + col * (cellW + gap);
+            const y = pad + row * (cellH + gap);
+
+            const img = new Image();
+            img.onload = () => {
+                // cover fill
+                const scale = Math.max(cellW / img.width, cellH / img.height);
+                const sw = cellW / scale;
+                const sh = cellH / scale;
+                const sx = (img.width - sw) / 2;
+                const sy = (img.height - sh) / 2;
+
+                ctx.save();
+                ctx.beginPath();
+                roundRect(ctx, x, y, cellW, cellH, 6);
+                ctx.clip();
+                ctx.drawImage(img, sx, sy, sw, sh, x, y, cellW, cellH);
+                ctx.restore();
+
+                loaded++;
+                if (loaded === cfg.total) {
+                    // 최종 캔버스 URL 저장
+                    window._resultDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+                }
+            };
+            img.src = src;
+        });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.arcTo(x + w, y, x + w, y + r, r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+        ctx.lineTo(x + r, y + h);
+        ctx.arcTo(x, y + h, x, y + h - r, r);
+        ctx.lineTo(x, y + r);
+        ctx.arcTo(x, y, x + r, y, r);
+        ctx.closePath();
     }
 
     // ===== ACTIONS =====
     function downloadResult() {
+        const url = window._resultDataUrl || document.getElementById('resultCanvas').toDataURL('image/jpeg', 0.92);
         const link = document.createElement('a');
-        link.href = document.getElementById('resultConverted').src;
-        link.download = 'ai_photobooth_' + selectedStyle + '.jpg';
+        link.href = url;
+        link.download = `ai_photobooth_${selectedFrame}_${selectedStyle}.jpg`;
         link.click();
         showToast('다운로드가 시작됩니다 💾');
     }
 
     function retryConversion() {
-        // Keep photo, go back to style select
         selectedStyle = null;
+        convertedImages = [];
+        window._resultDataUrl = null;
         document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
         document.getElementById('styleNext').disabled = true;
         document.getElementById('procFill').style.width = '0%';
-        goTo(2);
+        goTo(5);
     }
 
     function resetAll() {
-        uploadedImage = null;
+        uploadedImages = [];
+        convertedImages = [];
         selectedStyle = null;
-        document.getElementById('uploadArea').classList.remove('has-image');
-        document.getElementById('previewImg').src = '';
+        selectedFrame = null;
+        selectedDesign = null;
+        selectedMode = null;
+        window._resultDataUrl = null;
+        document.getElementById('slotsWrapper').innerHTML = '';
         document.getElementById('uploadNext').disabled = true;
         document.getElementById('styleNext').disabled = true;
+        document.getElementById('frameNext').disabled = true;
+        document.getElementById('designNext').disabled = true;
+        document.getElementById('modeNext').disabled = true;
         document.getElementById('procFill').style.width = '0%';
         document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
-        document.getElementById('fileInput').value = '';
+        document.querySelectorAll('.frame-option').forEach(s => s.classList.remove('selected'));
+        document.querySelectorAll('.design-option').forEach(s => s.classList.remove('selected'));
+        document.querySelectorAll('.mode-option').forEach(s => s.classList.remove('selected'));
         goTo(0);
     }
 
