@@ -291,6 +291,17 @@
             gap: 12px;
             margin-bottom: 8px;
         }
+        /* 1x3 slim3 layout */
+        .slots-wrapper.layout-slim3 {
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 4px;
+        }
+        .slots-wrapper.layout-slim3 .upload-slot {
+            width: 180px;
+            height: 130px;
+        }
         /* 1x4 slim layout */
         .slots-wrapper.layout-slim {
             flex-direction: column;
@@ -302,6 +313,17 @@
         }
         .slots-wrapper.layout-slim .upload-slot {
             width: 180px;
+            height: 130px;
+        }
+        /* 2x2 wide4 layout */
+        .slots-wrapper.layout-wide4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .slots-wrapper.layout-wide4 .upload-slot {
+            width: 160px;
             height: 130px;
         }
         /* 2x3 wide layout */
@@ -433,139 +455,79 @@
             pointer-events: none;
         }
 
-        /* ========== PAGE 3 : STYLE SELECT ========== */
-        .style-tabs {
-            display: flex;
-            gap: 4px;
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 4px;
-            margin-bottom: 32px;
-        }
-        .style-tab {
-            padding: 10px 24px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-family: 'Noto Sans KR', sans-serif;
+        /* ========== PAGE 5 : KEYWORD SELECT ========== */
+        .keyword-hint {
             font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .keyword-counter {
+            font-size: 15px;
             font-weight: 600;
-            border-radius: 11px;
-            cursor: pointer;
-            transition: var(--transition);
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 22px;
         }
-        .style-tab.active {
-            background: var(--accent);
-            color: #fff;
+        .keyword-counter span { color: var(--accent); font-weight: 800; }
+        .keyword-section {
+            margin-bottom: 12px;
         }
-        .style-tab:not(.active):hover { color: var(--text-primary); }
-
-        .styles-scroll {
-            width: min(1100px, 94vw);
-            max-height: calc(100vh - 340px);
+        .keyword-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .keyword-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 760px;
+            max-height: calc(100vh - 380px);
             overflow-y: auto;
-            padding: 4px;
+            padding: 4px 4px 12px;
             scrollbar-width: thin;
             scrollbar-color: var(--bg-elevated) transparent;
         }
-        .styles-scroll::-webkit-scrollbar { width: 6px; }
-        .styles-scroll::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
-
-        .styles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .style-item {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
+        .keyword-cloud::-webkit-scrollbar { width: 4px; }
+        .keyword-cloud::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 2px; }
+        .keyword-tag {
+            padding: 10px 22px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            background: var(--bg-card);
-            border: 2px solid transparent;
+            white-space: nowrap;
         }
-        .style-item:hover {
-            transform: translateY(-4px);
-            border-color: rgba(160,120,90,0.2);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-        }
-        .style-item.selected {
+        .keyword-tag:hover:not(.keyword-max) {
             border-color: var(--accent);
-            box-shadow: 0 0 0 1px var(--accent), 0 12px 40px var(--accent-glow);
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+            transform: translateY(-2px);
         }
-        .style-item.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 10px; right: 10px;
-            width: 28px; height: 28px;
-            background: var(--accent);
+        .keyword-tag.selected {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
             color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 800;
-            z-index: 2;
+            border-color: transparent;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            transform: translateY(-2px);
         }
-        .style-visual {
-            height: 130px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            position: relative;
+        .keyword-tag.keyword-max:not(.selected) {
+            opacity: 0.35;
+            cursor: default;
+            transform: none;
         }
-        .style-visual::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 40px;
-            background: linear-gradient(transparent, var(--bg-card));
-        }
-        .style-info {
-            padding: 14px 16px 18px;
-        }
-        .style-name {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .style-desc {
-            font-size: 12px;
-            color: var(--text-dim);
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .style-badge {
-            position: absolute;
-            top: 10px; left: 10px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            z-index: 2;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            color: #a0785a;
-        }
-
-        /* Style gradients */
-        .grad-romance { background: linear-gradient(135deg, #ff6b95 0%, #c74b7a 100%); }
-        .grad-space { background: linear-gradient(135deg, #2d1b69 0%, #11998e 100%); }
-        .grad-fantasy { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
-        .grad-kpop { background: linear-gradient(135deg, #f7797d 0%, #c471ed 50%, #12c2e9 100%); }
-        .grad-vacation { background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%); }
-        .grad-rich { background: linear-gradient(135deg, #c6a052 0%, #8e6d2e 100%); }
-        .grad-demon { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
-        .grad-oshi { background: linear-gradient(135deg, #e44d90 0%, #8b5cf6 100%); }
-        .grad-titan { background: linear-gradient(135deg, #2c3e50 0%, #4a6274 100%); }
-        .grad-chainsaw { background: linear-gradient(135deg, #d32f2f 0%, #ff6659 100%); }
 
         /* ========== PAGE 4 : PROCESSING ========== */
         .processing-visual {
@@ -709,6 +671,14 @@
         }
         .result-btn.home:hover { color: var(--accent); }
 
+        /* ========== RESULT PAGE SCROLL ========== */
+        #page-8 {
+            overflow-y: auto;
+            justify-content: flex-start;
+            padding-top: 30px;
+            padding-bottom: 80px;
+        }
+
         /* ========== PROGRESS DOTS ========== */
         .progress-dots {
             position: fixed;
@@ -775,6 +745,83 @@
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
+        }
+
+        /* ========== PAGE 1 : EXPERIENCE SELECT ========== */
+        .experience-options {
+            display: flex;
+            gap: 32px;
+            align-items: stretch;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .experience-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 24px;
+            padding: 44px 36px 36px;
+            width: 290px;
+            position: relative;
+            text-align: center;
+        }
+        .experience-option:hover {
+            border-color: rgba(160,120,90,0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.07);
+        }
+        .experience-option.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent), 0 16px 48px var(--accent-glow);
+        }
+        .experience-option.selected .exp-check { display: flex; }
+        .exp-check {
+            position: absolute;
+            top: 14px; right: 14px;
+            width: 26px; height: 26px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .exp-icon { font-size: 54px; line-height: 1; }
+        .exp-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .experience-option.selected .exp-title { color: var(--accent); }
+        .exp-subtitle {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--accent-bright);
+            text-transform: uppercase;
+            margin-top: -8px;
+        }
+        .exp-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .exp-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(160,120,90,0.1);
+            color: var(--accent);
+            margin-top: 4px;
         }
 
         /* ========== PAGE 3 : MODE SELECT ========== */
@@ -851,9 +898,10 @@
 
         /* ========== PAGE 1 : FRAME SHAPE ========== */
         .frame-options {
-            display: flex;
-            gap: 40px;
-            align-items: center;
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 20px 40px;
+            align-items: end;
             justify-content: center;
             margin-bottom: 40px;
         }
@@ -881,12 +929,25 @@
             overflow: hidden;
             position: relative;
         }
-        /* 1x4 slim: 160x400 */
+        /* 1x3 slim3 */
+        .frame-preview.slim3 {
+            width: 130px;
+            height: 280px;
+        }
+        /* 1x4 slim */
         .frame-preview.slim {
             width: 130px;
             height: 360px;
         }
-        /* 2x3 wide: 260x300 */
+        /* 2x2 wide4 */
+        .frame-preview.wide4 {
+            width: 280px;
+            height: 240px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+        /* 2x3 wide */
         .frame-preview.wide {
             width: 280px;
             height: 320px;
@@ -1013,9 +1074,9 @@
             .page { padding: 24px; }
             .result-container { flex-direction: column; }
             .result-actions { flex-wrap: wrap; justify-content: center; }
-            .styles-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .style-visual { height: 100px; font-size: 36px; }
-            .nav-btn { padding: 14px 28px; font-size: 15px; }
+            .keyword-cloud { max-height: calc(100vh - 340px); gap: 8px; }
+            .keyword-tag { padding: 9px 18px; font-size: 14px; }
+.nav-btn { padding: 14px 28px; font-size: 15px; }
         }
     </style>
 </head>
@@ -1036,6 +1097,8 @@
     <div class="dot" data-page="4"></div>
     <div class="dot" data-page="5"></div>
     <div class="dot" data-page="6"></div>
+    <div class="dot" data-page="7"></div>
+    <div class="dot" data-page="8"></div>
 </div>
 
 <!-- Idle Overlay -->
@@ -1065,14 +1128,70 @@
     <div class="welcome-footer">화면을 터치하여 시작하세요</div>
 </div>
 
-<!-- ==================== PAGE 1 : FRAME SHAPE ==================== -->
+<!-- ==================== PAGE 1 : EXPERIENCE SELECT ==================== -->
 <div class="page" id="page-1">
+    <div class="page-header">
+        <div class="step-indicator"><div class="step-dot"></div> CHOOSE YOUR EXPERIENCE</div>
+        <div class="page-title">어떤 경험을 원하세요?</div>
+    </div>
+
+    <div class="experience-options">
+        <div class="experience-option" id="expOpt-beauty" onclick="selectExperience('beauty', this)">
+            <div class="exp-check">✓</div>
+            <div class="exp-icon">💄</div>
+            <div class="exp-title">야금야금 보정</div>
+            <div class="exp-subtitle">Natural Glow</div>
+            <div class="exp-desc">AI가 나를 살짝 더<br>예쁘게 만들어줘요<br>자연스럽고 은은하게</div>
+            <span class="exp-badge">내 얼굴 그대로 + 살짝</span>
+        </div>
+
+        <div class="experience-option" id="expOpt-world" onclick="selectExperience('world', this)">
+            <div class="exp-check">✓</div>
+            <div class="exp-icon">🌌</div>
+            <div class="exp-title">세계관 변환</div>
+            <div class="exp-subtitle">Full Immersion AI</div>
+            <div class="exp-desc">우주, 발리, 부자 등<br>키워드로 완전히 다른<br>세계로 변신!</div>
+            <span class="exp-badge">완전 몰입형 AI</span>
+        </div>
+    </div>
+
+    <div class="nav-row">
+        <button class="nav-btn secondary" onclick="goTo(0)">← 처음으로</button>
+        <button class="nav-btn primary" id="expNext" onclick="goTo(2)" disabled>다음 단계 →</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 2 : FRAME SHAPE ==================== -->
+<div class="page" id="page-2">
     <div class="page-header">
         <div class="step-indicator"><div class="step-dot"></div> STEP 1 OF 4</div>
         <div class="page-title">프레임 모양을 선택하세요</div>
     </div>
 
     <div class="frame-options">
+        <div class="frame-option" id="frameOpt-slim3" onclick="selectFrame('slim3', this)">
+            <div class="frame-preview slim3" id="framePreview-slim3">
+                <div class="frame-check">✓</div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+            </div>
+            <div class="frame-label">1 × 3</div>
+            <div class="frame-sublabel">3,500원</div>
+        </div>
+
+        <div class="frame-option" id="frameOpt-wide4" onclick="selectFrame('wide4', this)">
+            <div class="frame-preview wide4" id="framePreview-wide4">
+                <div class="frame-check">✓</div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+                <div class="frame-cell"></div>
+            </div>
+            <div class="frame-label">2 × 2</div>
+            <div class="frame-sublabel">4,000원</div>
+        </div>
+
         <div class="frame-option" id="frameOpt-slim" onclick="selectFrame('slim', this)">
             <div class="frame-preview slim" id="framePreview-slim">
                 <div class="frame-check">✓</div>
@@ -1101,13 +1220,13 @@
     </div>
 
     <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(0)">← 처음으로</button>
-        <button class="nav-btn primary" id="frameNext" onclick="goTo(2)" disabled>다음 단계 →</button>
+        <button class="nav-btn secondary" onclick="goTo(1)">← 이전</button>
+        <button class="nav-btn primary" id="frameNext" onclick="goTo(3)" disabled>다음 단계 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 2 : FRAME DESIGN ==================== -->
-<div class="page" id="page-2">
+<!-- ==================== PAGE 3 : FRAME DESIGN ==================== -->
+<div class="page" id="page-3">
     <div class="page-header">
         <div class="step-indicator"><div class="step-dot"></div> STEP 2 OF 4</div>
         <div class="page-title">프레임 디자인을 선택하세요</div>
@@ -1136,13 +1255,13 @@
     </div>
 
     <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(1)">← 이전</button>
-        <button class="nav-btn primary" id="designNext" onclick="goTo(3)" disabled>다음 단계 →</button>
+        <button class="nav-btn secondary" onclick="goTo(2)">← 이전</button>
+        <button class="nav-btn primary" id="designNext" onclick="goTo(4)" disabled>다음 단계 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 3 : MODE SELECT ==================== -->
-<div class="page" id="page-3">
+<!-- ==================== PAGE 4 : MODE SELECT ==================== -->
+<div class="page" id="page-4">
     <div class="page-header">
         <div class="step-indicator"><div class="step-dot"></div> STEP 3 OF 5</div>
         <div class="page-title">촬영 방식을 선택하세요</div>
@@ -1167,13 +1286,13 @@
     </div>
 
     <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(2)">← 이전</button>
-        <button class="nav-btn primary" id="modeNext" onclick="goTo(4)" disabled>다음 단계 →</button>
+        <button class="nav-btn secondary" onclick="goTo(3)">← 이전</button>
+        <button class="nav-btn primary" id="modeNext" onclick="goTo(5)" disabled>다음 단계 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 4 : UPLOAD ==================== -->
-<div class="page" id="page-4">
+<!-- ==================== PAGE 5 : UPLOAD ==================== -->
+<div class="page" id="page-5">
     <div class="page-header">
         <div class="step-indicator"><div class="step-dot"></div> STEP 4 OF 5</div>
         <div class="page-title">사진을 올려주세요</div>
@@ -1184,115 +1303,70 @@
     <div class="upload-tip">💡 얼굴이 정면으로 잘 보이는 밝은 사진이 좋아요</div>
 
     <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(3)">← 이전</button>
-        <button class="nav-btn primary" id="uploadNext" onclick="goTo(5)" disabled>다음 단계 →</button>
+        <button class="nav-btn secondary" onclick="goTo(4)">← 이전</button>
+        <button class="nav-btn primary" id="uploadNext" onclick="handleUploadNext()" disabled>다음 단계 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 5 : STYLE SELECT ==================== -->
-<div class="page" id="page-5">
+<!-- ==================== PAGE 6 : KEYWORD SELECT ==================== -->
+<div class="page" id="page-6">
     <div class="page-header">
         <div class="step-indicator"><div class="step-dot"></div> STEP 5 OF 5</div>
-        <div class="page-title">스타일을 선택하세요</div>
+        <div class="page-title">어떤 분위기로 만들까요?</div>
     </div>
 
-    <div class="style-tabs">
-        <button class="style-tab active" onclick="switchStyleTab('general', this)">일반</button>
-        <button class="style-tab" onclick="switchStyleTab('anime', this)">애니메이션</button>
-    </div>
+    <div class="keyword-hint">키워드를 골라주세요 — 최대 3개까지 선택할 수 있어요</div>
+    <div class="keyword-counter" id="keywordCounter"><span>0</span> / 3 선택됨</div>
 
-    <div class="styles-scroll">
-        <!-- General Styles -->
-        <div class="styles-grid" id="grid-general">
-            <div class="style-item" data-style="ideal-date" onclick="selectStyle(this)">
-                <div class="style-badge">🔥 인기</div>
-                <div class="style-visual grad-romance">💕</div>
-                <div class="style-info">
-                    <div class="style-name">이상형과 데이트</div>
-                    <div class="style-desc">완벽한 이상형과 로맨틱 카페 데이트</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="space" onclick="selectStyle(this)">
-                <div class="style-visual grad-space">🌌</div>
-                <div class="style-info">
-                    <div class="style-name">우주 유영</div>
-                    <div class="style-desc">은하수 속 환상적인 우주 비행사</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="fantasy" onclick="selectStyle(this)">
-                <div class="style-visual grad-fantasy">👸</div>
-                <div class="style-info">
-                    <div class="style-name">판타지 주인공</div>
-                    <div class="style-desc">마법 세계의 왕자/공주로 변신</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="kpop" onclick="selectStyle(this)">
-                <div class="style-visual grad-kpop">🎤</div>
-                <div class="style-info">
-                    <div class="style-name">케이팝 아이돌</div>
-                    <div class="style-desc">무대 위 스포트라이트를 받는 스타</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="bali" onclick="selectStyle(this)">
-                <div class="style-visual grad-vacation">🌴</div>
-                <div class="style-info">
-                    <div class="style-name">발리 휴양지</div>
-                    <div class="style-desc">에메랄드빛 바다 위 완벽한 인증샷</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="rich" onclick="selectStyle(this)">
-                <div class="style-visual grad-rich">💎</div>
-                <div class="style-info">
-                    <div class="style-name">재벌 2세</div>
-                    <div class="style-desc">명품 슈트와 럭셔리 라이프</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Anime Styles -->
-        <div class="styles-grid" id="grid-anime" style="display:none">
-            <div class="style-item" data-style="demon-slayer" onclick="selectStyle(this)">
-                <div class="style-badge">🔥 인기</div>
-                <div class="style-visual grad-demon">🗡️</div>
-                <div class="style-info">
-                    <div class="style-name">귀멸의 칼날</div>
-                    <div class="style-desc">강렬한 색감의 귀살대원으로 변신</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="oshi-no-ko" onclick="selectStyle(this)">
-                <div class="style-badge">🔥 인기</div>
-                <div class="style-visual grad-oshi">⭐</div>
-                <div class="style-info">
-                    <div class="style-name">최애의 아이</div>
-                    <div class="style-desc">별 모양 눈동자의 화려한 아이돌</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="attack-titan" onclick="selectStyle(this)">
-                <div class="style-visual grad-titan">⚔️</div>
-                <div class="style-info">
-                    <div class="style-name">진격의 거인</div>
-                    <div class="style-desc">조사병단의 용감한 전사로 변신</div>
-                </div>
-            </div>
-            <div class="style-item" data-style="chainsaw-man" onclick="selectStyle(this)">
-                <div class="style-badge">✨ NEW</div>
-                <div class="style-visual grad-chainsaw">⛓️</div>
-                <div class="style-info">
-                    <div class="style-name">체인소맨</div>
-                    <div class="style-desc">다크하고 강렬한 데빌 헌터</div>
-                </div>
-            </div>
-        </div>
+    <div class="keyword-cloud" id="keywordCloud">
+        <!-- 장소 -->
+        <button class="keyword-tag" data-keyword="우주" onclick="toggleKeyword(this)">🌌 우주</button>
+        <button class="keyword-tag" data-keyword="발리" onclick="toggleKeyword(this)">🌴 발리</button>
+        <button class="keyword-tag" data-keyword="파리" onclick="toggleKeyword(this)">🗼 파리</button>
+        <button class="keyword-tag" data-keyword="뉴욕" onclick="toggleKeyword(this)">🗽 뉴욕</button>
+        <button class="keyword-tag" data-keyword="일본" onclick="toggleKeyword(this)">🌸 일본</button>
+        <button class="keyword-tag" data-keyword="하와이" onclick="toggleKeyword(this)">🏄 하와이</button>
+        <button class="keyword-tag" data-keyword="숲속" onclick="toggleKeyword(this)">🌿 숲속</button>
+        <button class="keyword-tag" data-keyword="설원" onclick="toggleKeyword(this)">🏔️ 설원</button>
+        <button class="keyword-tag" data-keyword="도시" onclick="toggleKeyword(this)">🌆 도시</button>
+        <button class="keyword-tag" data-keyword="밤" onclick="toggleKeyword(this)">🌙 밤</button>
+        <!-- 분위기/스타일 -->
+        <button class="keyword-tag" data-keyword="부자" onclick="toggleKeyword(this)">💎 부자</button>
+        <button class="keyword-tag" data-keyword="로맨스" onclick="toggleKeyword(this)">💕 로맨스</button>
+        <button class="keyword-tag" data-keyword="빈티지" onclick="toggleKeyword(this)">📷 빈티지</button>
+        <button class="keyword-tag" data-keyword="고딕" onclick="toggleKeyword(this)">🖤 고딕</button>
+        <button class="keyword-tag" data-keyword="사이버펑크" onclick="toggleKeyword(this)">🤖 사이버펑크</button>
+        <button class="keyword-tag" data-keyword="하이틴" onclick="toggleKeyword(this)">📚 하이틴</button>
+        <button class="keyword-tag" data-keyword="여름" onclick="toggleKeyword(this)">🌊 여름</button>
+        <button class="keyword-tag" data-keyword="겨울" onclick="toggleKeyword(this)">❄️ 겨울</button>
+        <button class="keyword-tag" data-keyword="파티" onclick="toggleKeyword(this)">🎉 파티</button>
+        <button class="keyword-tag" data-keyword="힙합" onclick="toggleKeyword(this)">🎧 힙합</button>
+        <!-- 캐릭터/역할 -->
+        <button class="keyword-tag" data-keyword="케이팝" onclick="toggleKeyword(this)">🎤 케이팝</button>
+        <button class="keyword-tag" data-keyword="왕족" onclick="toggleKeyword(this)">👑 왕족</button>
+        <button class="keyword-tag" data-keyword="마법사" onclick="toggleKeyword(this)">🧙 마법사</button>
+        <button class="keyword-tag" data-keyword="비밀요원" onclick="toggleKeyword(this)">🕵️ 비밀요원</button>
+        <button class="keyword-tag" data-keyword="록스타" onclick="toggleKeyword(this)">🎸 록스타</button>
+        <button class="keyword-tag" data-keyword="영웅" onclick="toggleKeyword(this)">🦸 영웅</button>
+        <button class="keyword-tag" data-keyword="악당" onclick="toggleKeyword(this)">😈 악당</button>
+        <button class="keyword-tag" data-keyword="요정" onclick="toggleKeyword(this)">🧚 요정</button>
+        <button class="keyword-tag" data-keyword="애니" onclick="toggleKeyword(this)">✨ 애니</button>
+        <button class="keyword-tag" data-keyword="판타지" onclick="toggleKeyword(this)">👸 판타지</button>
+        <!-- 이벤트 -->
+        <button class="keyword-tag" data-keyword="웨딩" onclick="toggleKeyword(this)">💍 웨딩</button>
+        <button class="keyword-tag" data-keyword="캠핑" onclick="toggleKeyword(this)">🏕️ 캠핑</button>
+        <button class="keyword-tag" data-keyword="졸업" onclick="toggleKeyword(this)">🎓 졸업</button>
+        <button class="keyword-tag" data-keyword="운동선수" onclick="toggleKeyword(this)">🏆 운동선수</button>
     </div>
 
     <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(4)">← 이전</button>
+        <button class="nav-btn secondary" onclick="goTo(5)">← 이전</button>
         <button class="nav-btn primary" id="styleNext" onclick="startProcessing()" disabled>변환 시작 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 6 : PROCESSING ==================== -->
-<div class="page" id="page-6">
+<!-- ==================== PAGE 7 : PROCESSING ==================== -->
+<div class="page" id="page-7">
     <div class="processing-visual">
         <div class="proc-ring"></div>
         <div class="proc-ring"></div>
@@ -1304,8 +1378,8 @@
     <div class="proc-bar"><div class="proc-bar-fill" id="procFill"></div></div>
 </div>
 
-<!-- ==================== PAGE 7 : RESULT ==================== -->
-<div class="page" id="page-7">
+<!-- ==================== PAGE 8 : RESULT ==================== -->
+<div class="page" id="page-8">
     <div class="page-header">
         <div class="step-indicator"><div class="step-dot"></div> 완료</div>
         <div class="page-title">변환이 완료되었어요! 🎉</div>
@@ -1331,7 +1405,9 @@
     // ===== STATE =====
     let currentPage = 0;
     let uploadedImages = [];    // array of base64 strings per slot
-    let selectedStyle = null;
+    let selectedKeywords = [];
+    const MAX_KEYWORDS = 3;
+    let selectedExperienceMode = null; // 'beauty' | 'world'
     let selectedFrame = null;   // 'slim' | 'wide'
     let selectedDesign = null;  // 'white' | 'black'
     let selectedMode = null;    // 'auto' | 'manual'
@@ -1344,8 +1420,10 @@
 
     // frame config
     const FRAME_CONFIG = {
-        slim: { cols: 1, rows: 4, total: 4 },
-        wide: { cols: 2, rows: 3, total: 6 }
+        slim3: { cols: 1, rows: 3, total: 3 },
+        slim:  { cols: 1, rows: 4, total: 4 },
+        wide4: { cols: 2, rows: 2, total: 4 },
+        wide:  { cols: 2, rows: 3, total: 6 }
     };
 
     // ===== API KEY =====
@@ -1366,19 +1444,70 @@
         document.getElementById('apiKeyStatus').className = 'api-key-status ok';
     }
 
-    // ===== STYLE PROMPTS =====
-    const STYLE_PROMPTS = {
-        'ideal-date': 'Transform this person into a romantic date scene at a beautiful cafe. Keep the person\'s facial features, but style them elegantly. Add romantic lighting, rose petals, soft bokeh background with a cozy cafe interior. Photorealistic, high quality.',
-        'space': 'Transform this person into an astronaut floating in space surrounded by a stunning galaxy, nebulas, and stars. Keep their facial features. Wearing a sleek futuristic space suit. Cinematic, photorealistic.',
-        'fantasy': 'Transform this person into a fantasy prince or princess in a magical kingdom. Keep their facial features. Add an elegant royal outfit, magical glowing effects, fantasy castle background. Highly detailed, cinematic.',
-        'kpop': 'Transform this person into a K-pop idol on a concert stage. Keep their facial features. Add stylish modern outfit, dramatic stage lighting with colorful spotlights, crowd in background. High quality, photorealistic.',
-        'bali': 'Transform this person into a vacation photo at a luxury Bali resort. Keep their facial features. Add stylish summer outfit, turquoise ocean, tropical palm trees, golden hour lighting. Travel photography style.',
-        'rich': 'Transform this person into a wealthy heir or heiress. Keep their facial features. Add a luxury tailored suit or elegant dress, premium watch or jewelry, blurred luxury car or penthouse background. Sophisticated, photorealistic.',
-        'demon-slayer': 'Transform this person into an anime character in the style of Demon Slayer (Kimetsu no Yaiba). Keep their facial proportions. Add a demon slayer corps uniform (haori), intense anime art style with vibrant colors, dynamic background.',
-        'oshi-no-ko': 'Transform this person into an anime idol character in the style of Oshi no Ko. Keep their facial proportions. Add star-shaped pupils, idol outfit, sparkly stage background, cute anime art style.',
-        'attack-titan': 'Transform this person into a Survey Corps soldier from Attack on Titan anime. Keep their facial proportions. Add the Survey Corps uniform with ODM gear, dramatic sky and wall background, anime art style.',
-        'chainsaw-man': 'Transform this person into a character in the style of Chainsaw Man anime. Keep their facial proportions. Dark and gritty anime art style, devil hunter outfit, dramatic moody background with chains.'
+    // ===== BEAUTY MODE PROMPT =====
+    const BEAUTY_PROMPT = `Subtly enhance this person's appearance in a natural, realistic way. Make them look like a slightly more polished, radiant version of themselves — as if they had perfect lighting, well-rested skin, and gentle professional makeup. Improve skin texture very slightly, enhance natural features softly, add a flattering warm glow. Keep ALL facial features exactly the same: same face shape, eyes, nose, mouth, jaw line, all distinctive features. Do not dramatically change appearance. The result must clearly be the same person, just on their best day. No filters, no over-smoothing, just natural beauty.`;
+
+    // ===== KEYWORD PROMPTS =====
+    const KEYWORD_PROMPTS = {
+        '우주': 'floating in space surrounded by a stunning galaxy, nebulas, and stars, wearing a sleek futuristic space suit, cinematic space backdrop',
+        '발리': 'at a luxury Bali resort with turquoise ocean, tropical palm trees, and golden hour lighting, stylish summer outfit, travel photography style',
+        '파리': 'in Paris with the Eiffel Tower in the background, chic French fashion, romantic Parisian atmosphere',
+        '뉴욕': 'in New York City with iconic skyline or Times Square backdrop, urban fashion, energetic city vibes',
+        '일본': 'in Japan with cherry blossoms or traditional temple backdrop, elegant and peaceful atmosphere',
+        '하와이': 'in Hawaii with a stunning beach, clear blue water, tropical flowers, and perfect sunset, relaxed island vibes',
+        '숲속': 'in a lush enchanted forest with dappled sunlight through leaves, nature-inspired outfit, peaceful magical woodland scene',
+        '설원': 'in a snowy winter mountain landscape, warm winter coat, breath visible in cold air, serene alpine beauty',
+        '도시': 'in a modern urban cityscape with sleek glass buildings and busy streets, stylish contemporary fashion, vibrant city energy',
+        '밤': 'in a beautiful night scene with glittering city lights or starry sky, atmospheric nocturnal lighting, moody and cinematic',
+        '부자': 'as a wealthy heir with a luxury tailored suit, premium watch and jewelry, penthouse or luxury car background, sophisticated and glamorous',
+        '로맨스': 'in a romantic cafe date scene with soft bokeh, candlelight, rose petals, and warm intimate lighting, elegantly styled',
+        '빈티지': 'with a vintage aesthetic, warm film grain, retro 70s or 90s fashion, nostalgic Kodak-style atmosphere',
+        '고딕': 'with a dark gothic aesthetic, dramatic shadows, elegant dark clothing, mysterious and moody atmosphere',
+        '사이버펑크': 'in a neon-lit cyberpunk city at night, futuristic hi-tech outfit, rainy urban street backdrop',
+        '하이틴': 'as a bright high school student with a colorful locker hallway background, youthful cheerful energy',
+        '여름': 'in a bright sunny summer scene, light breezy outfit, vivid sunny beach or summer festival backdrop',
+        '겨울': 'in a cozy winter scene with soft snow falling, warm cable-knit sweater, snowy street or fireplace atmosphere',
+        '파티': 'at a glamorous party with sparkling lights, celebratory atmosphere, stylish evening outfit, confetti',
+        '힙합': 'with hip-hop street style, urban graffiti backdrop, cool streetwear outfit, confident attitude',
+        '케이팝': 'as a K-pop idol on a concert stage with dramatic colorful spotlights, stylish modern outfit, fan crowd in background',
+        '왕족': 'as a royal monarch with a crown and opulent palace background, majestic regal clothing and posture',
+        '마법사': 'as a powerful wizard or sorcerer with glowing magical spells, mystical robes, enchanted forest or ancient tower background',
+        '비밀요원': 'as a stylish secret agent in a sleek suit, action pose, dramatic luxury venue or urban rooftop background',
+        '록스타': 'as a rock star on stage with electric guitar, dramatic concert lighting, energetic crowd, rockstar outfit',
+        '영웅': 'as a superhero with a dramatic cape or armor, heroic pose, epic skyline or dramatic stormy sky background',
+        '악당': 'as a sophisticated villain with dark dramatic clothing, ominous background, mysterious powerful aura',
+        '요정': 'as a magical fairy with delicate shimmering wings, glowing enchanted nature setting, soft ethereal light',
+        '애니': 'in a vibrant anime art style with expressive anime eyes, dynamic pose, colorful illustrated background',
+        '판타지': 'as a fantasy prince or princess in a magical kingdom with glowing magical effects, royal outfit, fantasy castle background',
+        '웨딩': 'in a beautiful wedding scene with elegant white dress or tuxedo, floral decoration, romantic venue backdrop',
+        '캠핑': 'at a scenic campsite with mountains or forest, cozy outdoor outfit, campfire or tent backdrop, golden hour',
+        '졸업': 'in a graduation ceremony with cap and gown, confetti, celebratory and proud atmosphere',
+        '운동선수': 'as a professional athlete in a dynamic sports pose, stadium or arena backdrop, athletic outfit, winner energy'
     };
+
+    function buildStylePrompt() {
+        if (selectedExperienceMode === 'beauty') return BEAUTY_PROMPT;
+        if (selectedKeywords.length === 0) return 'Transform this person into an amazing artistic version.';
+        const parts = selectedKeywords.map(kw => KEYWORD_PROMPTS[kw] || kw);
+        return `Transform this person with the following combined themes and aesthetics: ${parts.join(' + ')}. Blend all selected themes naturally into one cohesive scene. Keep the person's facial features exactly the same.`;
+    }
+
+    // ===== EXPERIENCE SELECT =====
+    function selectExperience(type, el) {
+        document.querySelectorAll('.experience-option').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedExperienceMode = type;
+        document.getElementById('expNext').disabled = false;
+    }
+
+    // ===== UPLOAD NEXT (conditional routing) =====
+    function handleUploadNext() {
+        if (selectedExperienceMode === 'beauty') {
+            startProcessing();
+        } else {
+            goTo(6);
+        }
+    }
 
     // ===== GEMINI API CALL =====
     const SYSTEM_PROMPT = `You are an AI photo transformation assistant. Your absolute top priority is facial identity preservation.
@@ -1390,8 +1519,8 @@ CRITICAL RULES — never break these:
 4. If the style is anime or illustrated, maintain the facial likeness as closely as possible while applying the art style only to non-face elements.
 5. The output must clearly be recognizable as the same person from the input photo.`;
 
-    async function callGeminiImageGen(base64Image, mimeType, styleKey) {
-        const stylePrompt = STYLE_PROMPTS[styleKey] || 'Transform this person into an amazing artistic version.';
+    async function callGeminiImageGen(base64Image, mimeType) {
+        const stylePrompt = buildStylePrompt();
         const prompt = `${stylePrompt}\n\nREMEMBER: Do not change the person's face at all. Keep every facial feature exactly the same.`;
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiApiKey}`;
 
@@ -1448,7 +1577,7 @@ CRITICAL RULES — never break these:
         setTimeout(() => {
             next.classList.add('active');
             // 업로드 페이지 진입 시 슬롯 빌드
-            if (pageIdx === 4 && selectedFrame && selectedMode) {
+            if (pageIdx === 5 && selectedFrame && selectedMode) {
                 buildSlots();
             }
         }, 150);
@@ -1462,7 +1591,7 @@ CRITICAL RULES — never break these:
         const dots = document.querySelectorAll('.progress-dots .dot');
         dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
         // Hide dots on welcome & processing pages
-        const hide = currentPage === 0 || currentPage === 6;
+        const hide = currentPage === 0 || currentPage === 7;
         document.getElementById('progressDots').classList.toggle('hide', hide);
     }
 
@@ -1607,30 +1736,44 @@ CRITICAL RULES — never break these:
         document.getElementById('designNext').disabled = false;
     }
 
-    // ===== STYLE SELECT =====
-    function switchStyleTab(tab, btn) {
-        document.querySelectorAll('.style-tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('grid-general').style.display = tab === 'general' ? 'grid' : 'none';
-        document.getElementById('grid-anime').style.display = tab === 'anime' ? 'grid' : 'none';
-    }
+    // ===== KEYWORD SELECT =====
+    function toggleKeyword(el) {
+        const kw = el.getAttribute('data-keyword');
+        const idx = selectedKeywords.indexOf(kw);
+        const tags = document.querySelectorAll('.keyword-tag');
 
-    function selectStyle(el) {
-        document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedStyle = el.getAttribute('data-style');
-        document.getElementById('styleNext').disabled = false;
+        if (idx > -1) {
+            selectedKeywords.splice(idx, 1);
+            el.classList.remove('selected');
+        } else if (selectedKeywords.length < MAX_KEYWORDS) {
+            selectedKeywords.push(kw);
+            el.classList.add('selected');
+        } else {
+            showToast(`최대 ${MAX_KEYWORDS}개까지 선택할 수 있어요`);
+            return;
+        }
+
+        const atMax = selectedKeywords.length >= MAX_KEYWORDS;
+        tags.forEach(tag => {
+            if (!tag.classList.contains('selected')) {
+                tag.classList.toggle('keyword-max', atMax);
+            }
+        });
+
+        document.getElementById('keywordCounter').innerHTML =
+            `<span>${selectedKeywords.length}</span> / ${MAX_KEYWORDS} 선택됨`;
+        document.getElementById('styleNext').disabled = selectedKeywords.length === 0;
     }
 
     // ===== PROCESSING =====
     async function startProcessing() {
         const cfg = FRAME_CONFIG[selectedFrame];
         const minRequired = selectedMode === 'auto' ? 1 : cfg.total;
-        if (uploadedImages.filter(Boolean).length < minRequired) { showToast('사진을 업로드해주세요'); goTo(4); return; }
-        if (!selectedStyle) { showToast('스타일을 선택해주세요'); return; }
+        if (uploadedImages.filter(Boolean).length < minRequired) { showToast('사진을 업로드해주세요'); goTo(5); return; }
+        if (selectedExperienceMode === 'world' && selectedKeywords.length === 0) { showToast('키워드를 하나 이상 선택해주세요'); return; }
         if (!geminiApiKey) { showToast('API 키를 먼저 입력해주세요'); goTo(0); return; }
 
-        goTo(6);
+        goTo(7);
 
         const isAuto = selectedMode === 'auto';
         const messages = isAuto ? [
@@ -1664,10 +1807,10 @@ CRITICAL RULES — never break these:
                 clearInterval(interval);
                 if (apiError) {
                     showToast('오류: ' + apiError);
-                    goTo(5);
+                    goTo(selectedExperienceMode === 'beauty' ? 5 : 6);
                 } else {
                     renderResult();
-                    goTo(7);
+                    goTo(8);
                 }
             }
         }, 60);
@@ -1679,7 +1822,7 @@ CRITICAL RULES — never break these:
                 const mimeMatch = srcImg.match(/^data:(image\/\w+);base64,/);
                 const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
                 const autoPromises = Array.from({ length: cfg.total }, (_, i) =>
-                    callGeminiImageGenAuto(srcImg, mime, selectedStyle, i, cfg.total)
+                    callGeminiImageGenAuto(srcImg, mime, i, cfg.total)
                 );
                 convertedImages = await Promise.all(autoPromises);
             } else {
@@ -1687,7 +1830,7 @@ CRITICAL RULES — never break these:
                 const promises = uploadedImages.map(img => {
                     const mimeMatch = img.match(/^data:(image\/\w+);base64,/);
                     const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
-                    return callGeminiImageGen(img, mime, selectedStyle);
+                    return callGeminiImageGen(img, mime);
                 });
                 convertedImages = await Promise.all(promises);
             }
@@ -1698,8 +1841,8 @@ CRITICAL RULES — never break these:
     }
 
     // AI 자동 모드 전용 API 호출 — 같은 인물, 서로 다른 장면/순간 생성
-    async function callGeminiImageGenAuto(base64Image, mimeType, styleKey, slotIndex, totalSlots) {
-        const stylePrompt = STYLE_PROMPTS[styleKey] || 'Transform this person into an amazing artistic version.';
+    async function callGeminiImageGenAuto(base64Image, mimeType, slotIndex, totalSlots) {
+        const stylePrompt = buildStylePrompt();
         const sceneDescriptions = [
             `Scene ${slotIndex + 1} of ${totalSlots}: Beginning / introduction scene. The person is arriving or preparing.`,
             `Scene ${slotIndex + 1} of ${totalSlots}: Rising action scene. The person is actively engaged, excited, in motion.`,
@@ -1758,8 +1901,9 @@ REMEMBER: Keep the person's facial features exactly the same. Do not change the 
         canvas.width = canvasW;
         canvas.height = canvasH;
 
-        // Scale down for display (max height ~420px)
-        const displayScale = Math.min(1, 420 / canvasH);
+        // Scale for display — 화면 너비의 50% 기준, 세로 긴 경우 스크롤
+        const maxW = window.innerWidth * 0.5;
+        const displayScale = Math.min(1, maxW / canvasW);
         canvas.style.width = (canvasW * displayScale) + 'px';
         canvas.style.height = (canvasH * displayScale) + 'px';
 
@@ -1818,25 +1962,30 @@ REMEMBER: Keep the person's facial features exactly the same. Do not change the 
         const url = window._resultDataUrl || document.getElementById('resultCanvas').toDataURL('image/jpeg', 0.92);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `ai_photobooth_${selectedFrame}_${selectedStyle}.jpg`;
+        link.download = `ai_photobooth_${selectedFrame}_${selectedKeywords.join('_')}.jpg`;
         link.click();
         showToast('다운로드가 시작됩니다 💾');
     }
 
     function retryConversion() {
-        selectedStyle = null;
+        selectedKeywords = [];
         convertedImages = [];
         window._resultDataUrl = null;
-        document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
+        document.querySelectorAll('.keyword-tag').forEach(t => {
+            t.classList.remove('selected', 'keyword-max');
+        });
+        document.getElementById('keywordCounter').innerHTML = '<span>0</span> / 3 선택됨';
         document.getElementById('styleNext').disabled = true;
         document.getElementById('procFill').style.width = '0%';
-        goTo(5);
+        // beauty mode: 업로드로, world mode: 키워드 선택으로
+        goTo(selectedExperienceMode === 'beauty' ? 5 : 6);
     }
 
     function resetAll() {
         uploadedImages = [];
         convertedImages = [];
-        selectedStyle = null;
+        selectedKeywords = [];
+        selectedExperienceMode = null;
         selectedFrame = null;
         selectedDesign = null;
         selectedMode = null;
@@ -1847,8 +1996,13 @@ REMEMBER: Keep the person's facial features exactly the same. Do not change the 
         document.getElementById('frameNext').disabled = true;
         document.getElementById('designNext').disabled = true;
         document.getElementById('modeNext').disabled = true;
+        document.getElementById('expNext').disabled = true;
         document.getElementById('procFill').style.width = '0%';
-        document.querySelectorAll('.style-item').forEach(s => s.classList.remove('selected'));
+        document.querySelectorAll('.keyword-tag').forEach(t => {
+            t.classList.remove('selected', 'keyword-max');
+        });
+        document.getElementById('keywordCounter').innerHTML = '<span>0</span> / 3 선택됨';
+        document.querySelectorAll('.experience-option').forEach(s => s.classList.remove('selected'));
         document.querySelectorAll('.frame-option').forEach(s => s.classList.remove('selected'));
         document.querySelectorAll('.design-option').forEach(s => s.classList.remove('selected'));
         document.querySelectorAll('.mode-option').forEach(s => s.classList.remove('selected'));
