@@ -529,6 +529,96 @@
             transform: none;
         }
 
+        /* ========== PAGE 6 : KEYWORD + PHOTO LAYOUT ========== */
+        #page-6 {
+            justify-content: flex-start;
+            padding-top: 24px;
+            padding-bottom: 70px;
+            overflow-y: auto;
+        }
+        .kw-layout {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            max-width: 900px;
+            width: 100%;
+        }
+        .kw-photo-panel {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .kw-photo-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .kw-photo-grid { display: flex; gap: 8px; }
+        .kw-photo-grid.kw-grid-slim,
+        .kw-photo-grid.kw-grid-slim3 { flex-direction: column; }
+        .kw-photo-grid.kw-grid-wide,
+        .kw-photo-grid.kw-grid-wide4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .kw-slot {
+            border: 2.5px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--bg-card);
+            overflow: hidden;
+        }
+        .kw-slot:hover { border-color: rgba(160,120,90,0.4); transform: translateY(-2px); }
+        .kw-slot.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow), 0 6px 20px var(--accent-glow);
+        }
+        .kw-grid-slim .kw-slot,
+        .kw-grid-slim3 .kw-slot { width: 155px; }
+        .kw-grid-wide .kw-slot,
+        .kw-grid-wide4 .kw-slot { width: 118px; }
+        .kw-slot-img-wrap { width: 100%; overflow: hidden; position: relative; }
+        .kw-grid-slim .kw-slot-img-wrap,
+        .kw-grid-slim3 .kw-slot-img-wrap { height: 108px; }
+        .kw-grid-wide .kw-slot-img-wrap,
+        .kw-grid-wide4 .kw-slot-img-wrap { height: 90px; }
+        .kw-slot-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .kw-slot-num {
+            position: absolute; top: 5px; left: 7px;
+            font-size: 10px; font-weight: 700; color: #fff;
+            background: rgba(0,0,0,0.42); border-radius: 4px; padding: 1px 5px;
+        }
+        .kw-slot-tags {
+            display: flex; flex-wrap: wrap; gap: 4px;
+            padding: 5px 6px 6px; justify-content: center;
+            min-height: 26px; width: 100%;
+        }
+        .kw-photo-tag {
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2px 5px 2px 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            color: #fff; border-radius: 20px; font-size: 10px; font-weight: 600;
+        }
+        .kw-tag-remove {
+            background: none; border: none; color: rgba(255,255,255,0.75);
+            cursor: pointer; font-size: 9px; padding: 0; line-height: 1; transition: color 0.2s;
+        }
+        .kw-tag-remove:hover { color: #fff; }
+        .kw-right-panel {
+            flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0;
+        }
+        .kw-counter {
+            font-size: 14px; font-weight: 600; color: var(--text-secondary);
+            text-align: center; min-height: 20px;
+        }
+        .kw-counter span { color: var(--accent); font-weight: 800; }
+        #page-6 .keyword-cloud { max-height: calc(100vh - 300px); }
+
         /* ========== PAGE 4 : PROCESSING ========== */
         .processing-visual {
             position: relative;
@@ -1283,17 +1373,23 @@
     </div>
 </div>
 
-<!-- ==================== PAGE 6 : KEYWORD SELECT ==================== -->
+<!-- ==================== PAGE 6 : KEYWORD + PHOTO ==================== -->
 <div class="page" id="page-6">
-    <div class="page-header">
+    <div class="page-header" style="margin-bottom:16px;">
         <div class="step-indicator"><div class="step-dot"></div> STEP 5 OF 5</div>
-        <div class="page-title">어떤 분위기로 만들까요?</div>
+        <div class="page-title">각 사진에 키워드를 선택하세요</div>
     </div>
 
-    <div class="keyword-hint">키워드를 골라주세요 — 최대 3개까지 선택할 수 있어요</div>
-    <div class="keyword-counter" id="keywordCounter"><span>0</span> / 3 선택됨</div>
-
-    <div class="keyword-cloud" id="keywordCloud">
+    <div class="kw-layout">
+        <!-- 왼쪽: 사진 그리드 -->
+        <div class="kw-photo-panel">
+            <div class="kw-photo-hint">사진을 클릭한 후 키워드를 선택하세요</div>
+            <div class="kw-photo-grid" id="kwPhotoGrid"></div>
+        </div>
+        <!-- 오른쪽: 키워드 -->
+        <div class="kw-right-panel">
+            <div class="kw-counter" id="kwCounter">사진을 먼저 선택해주세요</div>
+            <div class="keyword-cloud" id="keywordCloud">
         <!-- 장소 -->
         <button class="keyword-tag" data-keyword="우주" onclick="toggleKeyword(this)">🌌 우주</button>
         <button class="keyword-tag" data-keyword="발리" onclick="toggleKeyword(this)">🌴 발리</button>
@@ -1332,7 +1428,9 @@
         <button class="keyword-tag" data-keyword="캠핑" onclick="toggleKeyword(this)">🏕️ 캠핑</button>
         <button class="keyword-tag" data-keyword="졸업" onclick="toggleKeyword(this)">🎓 졸업</button>
         <button class="keyword-tag" data-keyword="운동선수" onclick="toggleKeyword(this)">🏆 운동선수</button>
-    </div>
+            </div><!-- keyword-cloud -->
+        </div><!-- kw-right-panel -->
+    </div><!-- kw-layout -->
 
     <div class="nav-row">
         <button class="nav-btn secondary" onclick="goTo(5)">← 이전</button>
@@ -1386,6 +1484,8 @@
     let selectedFrame = null;   // 'slim' | 'wide'
     let selectedDesign = null;  // 'white' | 'black'
     let selectedMode = 'manual';    // 항상 manual
+    let photoKeywords = [];     // 사진별 키워드 배열 [[kw1,kw2], [], ...]
+    let activePhotoIdx = null;  // 현재 키워드 선택 중인 사진 인덱스
     let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
     let convertedImages = [];   // array of converted base64 strings
     const IDLE_TIMEOUT = 120000;
@@ -1494,8 +1594,8 @@ CRITICAL RULES — never break these:
 4. If the style is anime or illustrated, maintain the facial likeness as closely as possible while applying the art style only to non-face elements.
 5. The output must clearly be recognizable as the same person from the input photo.`;
 
-    async function callGeminiImageGen(base64Image, mimeType) {
-        const stylePrompt = buildStylePrompt();
+    async function callGeminiImageGen(base64Image, mimeType, customPrompt) {
+        const stylePrompt = customPrompt != null ? customPrompt : buildStylePrompt();
         const prompt = `${stylePrompt}\n\nREMEMBER: Do not change the person's face at all. Keep every facial feature exactly the same.`;
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiApiKey}`;
 
@@ -1551,9 +1651,11 @@ CRITICAL RULES — never break these:
 
         setTimeout(() => {
             next.classList.add('active');
-            // 업로드 페이지 진입 시 슬롯 빌드
             if (pageIdx === 5 && selectedFrame && selectedMode) {
                 buildSlots();
+            }
+            if (pageIdx === 6) {
+                buildKeywordPage();
             }
         }, 150);
 
@@ -1711,33 +1813,104 @@ CRITICAL RULES — never break these:
         document.getElementById('designNext').disabled = false;
     }
 
-    // ===== KEYWORD SELECT =====
+    // ===== KEYWORD SELECT (per-photo) =====
     function toggleKeyword(el) {
+        if (activePhotoIdx === null) { showToast('사진을 먼저 선택해주세요 👆'); return; }
         const kw = el.getAttribute('data-keyword');
-        const idx = selectedKeywords.indexOf(kw);
-        const tags = document.querySelectorAll('.keyword-tag');
-
+        const photoKws = photoKeywords[activePhotoIdx];
+        const idx = photoKws.indexOf(kw);
         if (idx > -1) {
-            selectedKeywords.splice(idx, 1);
-            el.classList.remove('selected');
-        } else if (selectedKeywords.length < MAX_KEYWORDS) {
-            selectedKeywords.push(kw);
-            el.classList.add('selected');
+            photoKeywords[activePhotoIdx].splice(idx, 1);
+        } else if (photoKws.length < 2) {
+            photoKeywords[activePhotoIdx].push(kw);
         } else {
-            showToast(`최대 ${MAX_KEYWORDS}개까지 선택할 수 있어요`);
+            showToast('사진 하나당 최대 2개까지 선택할 수 있어요');
             return;
         }
+        updatePhotoTags(activePhotoIdx);
+        updateKeywordCloud();
+        updateKwCounter();
+        document.getElementById('styleNext').disabled = photoKeywords.every(kws => kws.length === 0);
+    }
 
-        const atMax = selectedKeywords.length >= MAX_KEYWORDS;
-        tags.forEach(tag => {
-            if (!tag.classList.contains('selected')) {
-                tag.classList.toggle('keyword-max', atMax);
-            }
+    function buildKeywordPage() {
+        const cfg = FRAME_CONFIG[selectedFrame];
+        photoKeywords = Array.from({ length: cfg.total }, () => []);
+        activePhotoIdx = null;
+        const grid = document.getElementById('kwPhotoGrid');
+        grid.innerHTML = '';
+        grid.className = `kw-photo-grid kw-grid-${selectedFrame}`;
+        uploadedImages.forEach((img, i) => {
+            const slot = document.createElement('div');
+            slot.className = 'kw-slot';
+            slot.id = `kwSlot-${i}`;
+            slot.onclick = () => selectPhotoForKeyword(i);
+            slot.innerHTML = `
+                <div class="kw-slot-img-wrap">
+                    <span class="kw-slot-num">${i + 1}</span>
+                    <img class="kw-slot-img" src="${img}" alt="">
+                </div>
+                <div class="kw-slot-tags" id="kwTags-${i}"></div>`;
+            grid.appendChild(slot);
         });
+        updateKeywordCloud();
+        updateKwCounter();
+        document.getElementById('styleNext').disabled = true;
+    }
 
-        document.getElementById('keywordCounter').innerHTML =
-            `<span>${selectedKeywords.length}</span> / ${MAX_KEYWORDS} 선택됨`;
-        document.getElementById('styleNext').disabled = selectedKeywords.length === 0;
+    function selectPhotoForKeyword(idx) {
+        activePhotoIdx = idx;
+        document.querySelectorAll('.kw-slot').forEach((s, i) => s.classList.toggle('active', i === idx));
+        updateKeywordCloud();
+        updateKwCounter();
+    }
+
+    function updatePhotoTags(idx) {
+        const el = document.getElementById(`kwTags-${idx}`);
+        if (!el) return;
+        el.innerHTML = photoKeywords[idx].map(kw =>
+            `<span class="kw-photo-tag">${kw}<button class="kw-tag-remove" onclick="removePhotoKeyword(event,${idx},'${kw}')">✕</button></span>`
+        ).join('');
+    }
+
+    function removePhotoKeyword(e, idx, kw) {
+        e.stopPropagation();
+        photoKeywords[idx] = photoKeywords[idx].filter(k => k !== kw);
+        updatePhotoTags(idx);
+        updateKeywordCloud();
+        updateKwCounter();
+        document.getElementById('styleNext').disabled = photoKeywords.every(kws => kws.length === 0);
+    }
+
+    function updateKeywordCloud() {
+        const tags = document.querySelectorAll('.keyword-tag');
+        if (activePhotoIdx === null) {
+            tags.forEach(t => t.classList.remove('selected', 'keyword-max'));
+            return;
+        }
+        const photoKws = photoKeywords[activePhotoIdx];
+        const atMax = photoKws.length >= 2;
+        tags.forEach(tag => {
+            const kw = tag.getAttribute('data-keyword');
+            const isSel = photoKws.includes(kw);
+            tag.classList.toggle('selected', isSel);
+            tag.classList.toggle('keyword-max', atMax && !isSel);
+        });
+    }
+
+    function updateKwCounter() {
+        const el = document.getElementById('kwCounter');
+        if (!el) return;
+        if (activePhotoIdx === null) { el.innerHTML = '사진을 먼저 선택해주세요'; return; }
+        const count = photoKeywords[activePhotoIdx].length;
+        el.innerHTML = `<span>${count}</span> / 2 키워드 선택됨 (${activePhotoIdx + 1}번 사진)`;
+    }
+
+    function buildStylePromptForPhoto(idx) {
+        const kws = photoKeywords[idx] || [];
+        if (kws.length === 0) return 'Transform this person beautifully while keeping all facial features exactly the same.';
+        const parts = kws.map(kw => KEYWORD_PROMPTS[kw] || kw);
+        return `Transform this person with the following themes: ${parts.join(' + ')}. Keep the person\'s facial features exactly the same.`;
     }
 
     // ===== PROCESSING =====
@@ -1745,7 +1918,7 @@ CRITICAL RULES — never break these:
         const cfg = FRAME_CONFIG[selectedFrame];
         const minRequired = selectedMode === 'auto' ? 1 : cfg.total;
         if (uploadedImages.filter(Boolean).length < minRequired) { showToast('사진을 업로드해주세요'); goTo(5); return; }
-        if (selectedExperienceMode === 'world' && selectedKeywords.length === 0) { showToast('키워드를 하나 이상 선택해주세요'); return; }
+        if (selectedExperienceMode === 'world' && photoKeywords.every(kws => kws.length === 0)) { showToast('키워드를 하나 이상 선택해주세요'); return; }
         if (!geminiApiKey) { showToast('API 키를 먼저 입력해주세요'); goTo(0); return; }
 
         goTo(7);
@@ -1801,11 +1974,12 @@ CRITICAL RULES — never break these:
                 );
                 convertedImages = await Promise.all(autoPromises);
             } else {
-                // manual: 각 슬롯 병렬 변환
-                const promises = uploadedImages.map(img => {
+                // manual: 각 슬롯 병렬 변환 (사진별 키워드 적용)
+                const promises = uploadedImages.map((img, i) => {
                     const mimeMatch = img.match(/^data:(image\/\w+);base64,/);
                     const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
-                    return callGeminiImageGen(img, mime);
+                    const customPrompt = selectedExperienceMode === 'beauty' ? null : buildStylePromptForPhoto(i);
+                    return callGeminiImageGen(img, mime, customPrompt);
                 });
                 convertedImages = await Promise.all(promises);
             }
@@ -1944,15 +2118,13 @@ REMEMBER: Keep the person's facial features exactly the same. Do not change the 
 
     function retryConversion() {
         selectedKeywords = [];
+        photoKeywords = [];
+        activePhotoIdx = null;
         convertedImages = [];
         window._resultDataUrl = null;
-        document.querySelectorAll('.keyword-tag').forEach(t => {
-            t.classList.remove('selected', 'keyword-max');
-        });
-        document.getElementById('keywordCounter').innerHTML = '<span>0</span> / 3 선택됨';
+        document.querySelectorAll('.keyword-tag').forEach(t => t.classList.remove('selected', 'keyword-max'));
         document.getElementById('styleNext').disabled = true;
         document.getElementById('procFill').style.width = '0%';
-        // beauty mode: 업로드로, world mode: 키워드 선택으로
         goTo(selectedExperienceMode === 'beauty' ? 5 : 6);
     }
 
@@ -1964,6 +2136,8 @@ REMEMBER: Keep the person's facial features exactly the same. Do not change the 
         selectedFrame = null;
         selectedDesign = null;
         selectedMode = 'manual';
+        photoKeywords = [];
+        activePhotoIdx = null;
         window._resultDataUrl = null;
         document.getElementById('slotsWrapper').innerHTML = '';
         document.getElementById('uploadNext').disabled = true;
