@@ -291,31 +291,33 @@
             gap: 12px;
             margin-bottom: 8px;
         }
-        /* 1x3 slim3 layout */
+        /* 1x3 slim3 layout — 칸 비율 ≈ 정사각형 (65:64) */
         .slots-wrapper.layout-slim3 {
             flex-direction: column;
             align-items: center;
             gap: 10px;
+            max-height: calc(100vh - 310px);
+            overflow-y: auto;
             padding: 4px;
         }
         .slots-wrapper.layout-slim3 .upload-slot {
             width: 230px;
-            height: 180px;
+            height: 226px;
         }
-        /* 1x4 slim layout */
+        /* 1x4 slim layout — 칸 비율 ≈ 가로형 (65:47) */
         .slots-wrapper.layout-slim {
             flex-direction: column;
             align-items: center;
             gap: 10px;
-            max-height: calc(100vh - 280px);
+            max-height: calc(100vh - 310px);
             overflow-y: auto;
             padding: 4px;
         }
         .slots-wrapper.layout-slim .upload-slot {
             width: 230px;
-            height: 180px;
+            height: 166px;
         }
-        /* 2x2 wide4 layout */
+        /* 2x2 wide4 layout — 칸 비율 ≈ 세로형 (72:87) */
         .slots-wrapper.layout-wide4 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -323,10 +325,10 @@
             gap: 12px;
         }
         .slots-wrapper.layout-wide4 .upload-slot {
-            width: 210px;
-            height: 175px;
+            width: 200px;
+            height: 242px;
         }
-        /* 2x3 wide layout */
+        /* 2x3 wide layout — 칸 비율 ≈ 살짝 가로형 (72:56) */
         .slots-wrapper.layout-wide {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -334,8 +336,8 @@
             gap: 12px;
         }
         .slots-wrapper.layout-wide .upload-slot {
-            width: 210px;
-            height: 175px;
+            width: 200px;
+            height: 156px;
         }
 
         .upload-slot {
@@ -578,15 +580,16 @@
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow), 0 6px 20px var(--accent-glow);
         }
-        .kw-grid-slim .kw-slot,
-        .kw-grid-slim3 .kw-slot { width: 235px; }
-        .kw-grid-wide .kw-slot,
-        .kw-grid-wide4 .kw-slot { width: 185px; }
+        /* 1x3: ≈정사각형 / 1x4: 가로형 / 2x2: 세로형 / 2x3: 살짝 가로형 */
+        .kw-grid-slim3 .kw-slot { width: 215px; }
+        .kw-grid-slim  .kw-slot { width: 215px; }
+        .kw-grid-wide4 .kw-slot { width: 160px; }
+        .kw-grid-wide  .kw-slot { width: 160px; }
         .kw-slot-img-wrap { width: 100%; overflow: hidden; position: relative; }
-        .kw-grid-slim .kw-slot-img-wrap,
-        .kw-grid-slim3 .kw-slot-img-wrap { height: 195px; }
-        .kw-grid-wide .kw-slot-img-wrap,
-        .kw-grid-wide4 .kw-slot-img-wrap { height: 160px; }
+        .kw-grid-slim3 .kw-slot-img-wrap { height: 212px; } /* ≈square */
+        .kw-grid-slim  .kw-slot-img-wrap { height: 154px; } /* landscape */
+        .kw-grid-wide4 .kw-slot-img-wrap { height: 194px; } /* portrait */
+        .kw-grid-wide  .kw-slot-img-wrap { height: 125px; } /* slight landscape */
         .kw-slot-img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .kw-slot-num {
             position: absolute; top: 6px; left: 8px;
