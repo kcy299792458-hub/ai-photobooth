@@ -898,18 +898,18 @@
 
         /* ========== PAGE 1 : FRAME SHAPE ========== */
         .frame-options {
-            display: grid;
-            grid-template-columns: auto auto;
-            gap: 20px 40px;
-            align-items: end;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
             justify-content: center;
-            margin-bottom: 40px;
+            gap: 28px;
+            margin-bottom: 28px;
         }
         .frame-option {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 12px;
             cursor: pointer;
             transition: var(--transition);
         }
@@ -931,31 +931,31 @@
         }
         /* 1x3 slim3 */
         .frame-preview.slim3 {
-            width: 130px;
-            height: 360px;
+            width: 75px;
+            height: 210px;
             flex-direction: column;
         }
         .frame-preview.slim3 .frame-cell {
-            margin: 5px 8px;
+            margin: 4px 6px;
             flex: 1;
         }
         /* 1x4 slim */
         .frame-preview.slim {
-            width: 130px;
-            height: 360px;
+            width: 75px;
+            height: 210px;
         }
         /* 2x2 wide4 */
         .frame-preview.wide4 {
-            width: 280px;
-            height: 240px;
+            width: 160px;
+            height: 135px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
         }
         /* 2x3 wide */
         .frame-preview.wide {
-            width: 280px;
-            height: 320px;
+            width: 160px;
+            height: 190px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr 1fr;
@@ -966,7 +966,7 @@
             border-radius: 4px;
         }
         .frame-preview.slim .frame-cell {
-            margin: 5px 8px;
+            margin: 4px 6px;
             flex: 1;
         }
         .frame-preview.slim {
