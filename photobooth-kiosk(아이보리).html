@@ -1099,7 +1099,6 @@
     <div class="dot" data-page="1"></div>
     <div class="dot" data-page="2"></div>
     <div class="dot" data-page="3"></div>
-    <div class="dot" data-page="4"></div>
     <div class="dot" data-page="5"></div>
     <div class="dot" data-page="6"></div>
     <div class="dot" data-page="7"></div>
@@ -1261,40 +1260,10 @@
 
     <div class="nav-row">
         <button class="nav-btn secondary" onclick="goTo(2)">← 이전</button>
-        <button class="nav-btn primary" id="designNext" onclick="goTo(4)" disabled>다음 단계 →</button>
+        <button class="nav-btn primary" id="designNext" onclick="goTo(5)" disabled>다음 단계 →</button>
     </div>
 </div>
 
-<!-- ==================== PAGE 4 : MODE SELECT ==================== -->
-<div class="page" id="page-4">
-    <div class="page-header">
-        <div class="step-indicator"><div class="step-dot"></div> STEP 3 OF 5</div>
-        <div class="page-title">촬영 방식을 선택하세요</div>
-    </div>
-
-    <div class="mode-options">
-        <div class="mode-option" id="modeOpt-auto" onclick="selectMode('auto', this)">
-            <div class="mode-check">✓</div>
-            <div class="mode-icon">✨</div>
-            <div class="mode-title">AI 자동 생성</div>
-            <div class="mode-desc">사진 1장만 올리면<br>AI가 스토리 있는<br>전체 칸을 만들어줘요</div>
-            <span class="mode-badge">사진 1장만 필요</span>
-        </div>
-
-        <div class="mode-option" id="modeOpt-manual" onclick="selectMode('manual', this)">
-            <div class="mode-check">✓</div>
-            <div class="mode-icon">📷</div>
-            <div class="mode-title">직접 선택</div>
-            <div class="mode-desc">각 칸에 들어갈 사진을<br>직접 한 장씩<br>선택할 수 있어요</div>
-            <span class="mode-badge">칸마다 사진 선택</span>
-        </div>
-    </div>
-
-    <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(3)">← 이전</button>
-        <button class="nav-btn primary" id="modeNext" onclick="goTo(5)" disabled>다음 단계 →</button>
-    </div>
-</div>
 
 <!-- ==================== PAGE 5 : UPLOAD ==================== -->
 <div class="page" id="page-5">
@@ -1306,9 +1275,10 @@
     <div class="slots-wrapper" id="slotsWrapper"></div>
     <div class="upload-counter" id="uploadCounter">0 / 0 장 업로드됨</div>
     <div class="upload-tip">💡 얼굴이 정면으로 잘 보이는 밝은 사진이 좋아요</div>
+    <div class="upload-tip">중복된 사진을 넣어도 괜찮아요!</div>
 
     <div class="nav-row">
-        <button class="nav-btn secondary" onclick="goTo(4)">← 이전</button>
+        <button class="nav-btn secondary" onclick="goTo(3)">← 이전</button>
         <button class="nav-btn primary" id="uploadNext" onclick="handleUploadNext()" disabled>다음 단계 →</button>
     </div>
 </div>
@@ -1415,7 +1385,7 @@
     let selectedExperienceMode = null; // 'beauty' | 'world'
     let selectedFrame = null;   // 'slim' | 'wide'
     let selectedDesign = null;  // 'white' | 'black'
-    let selectedMode = null;    // 'auto' | 'manual'
+    let selectedMode = 'manual';    // 항상 manual
     let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
     let convertedImages = [];   // array of converted base64 strings
     const IDLE_TIMEOUT = 120000;
@@ -1993,14 +1963,13 @@ REMEMBER: Keep the person's facial features exactly the same. Do not change the 
         selectedExperienceMode = null;
         selectedFrame = null;
         selectedDesign = null;
-        selectedMode = null;
+        selectedMode = 'manual';
         window._resultDataUrl = null;
         document.getElementById('slotsWrapper').innerHTML = '';
         document.getElementById('uploadNext').disabled = true;
         document.getElementById('styleNext').disabled = true;
         document.getElementById('frameNext').disabled = true;
         document.getElementById('designNext').disabled = true;
-        document.getElementById('modeNext').disabled = true;
         document.getElementById('expNext').disabled = true;
         document.getElementById('procFill').style.width = '0%';
         document.querySelectorAll('.keyword-tag').forEach(t => {
@@ -2010,7 +1979,6 @@ REMEMBER: Keep the person's facial features exactly the same. Do not change the 
         document.querySelectorAll('.experience-option').forEach(s => s.classList.remove('selected'));
         document.querySelectorAll('.frame-option').forEach(s => s.classList.remove('selected'));
         document.querySelectorAll('.design-option').forEach(s => s.classList.remove('selected'));
-        document.querySelectorAll('.mode-option').forEach(s => s.classList.remove('selected'));
         goTo(0);
     }
 
